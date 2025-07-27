@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>/start/</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anonymous+Pro:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Anonymous Pro', monospace;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #1B3C53;
+            color: #D2C1B6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #F9F3EF;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px #000;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .greeting {
+            font-size: 1.1rem;
+            color: #F9F3EF;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .datetime {
+            font-size: 0.9rem;
+            color: #F9F3EF;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar form {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            width: 100%;
+            max-width: 300px;
+            border: 2px solid #456882;
+            background: #1B3C53;
+            color: #D2C1B6;
+            font-size: 0.9rem;
+            outline: none;
+            border-radius: 0;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar input:focus {
+            border-color: #F9F3EF;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            border: 2px solid #456882;
+            border-left: none;
+            background: #456882;
+            color: #F9F3EF;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+            touch-action: manipulation;
+        }
+
+        .search-bar button:hover {
+            background: #F9F3EF;
+            color: #1B3C53;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .category-btn {
+            padding: 12px 24px;
+            border: 2px solid #456882;
+            background: #456882;
+            color: #F9F3EF;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+            min-width: 100px;
+        }
+
+        .category-btn:hover {
+            background: #F9F3EF;
+            color: #1B3C53;
+            transform: scale(1.05);
+            box-shadow: 0 0 10px #F9F3EF;
+        }
+
+        .category-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .category-btn:hover::after {
+            left: 100%;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            background: #D2C1B6;
+            border: 3px solid #456882;
+            padding: 15px;
+            z-index: 1000;
+            width: 90%;
+            max-width: 350px;
+            animation: popupIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+
+        .popup.glow {
+            animation: popupIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards, glow 1s infinite alternate;
+        }
+
+        .popup h2 {
+            color: #1B3C53;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .popup ul {
+            list-style: none;
+        }
+
+        .popup li {
+            margin: 10px 0;
+            color: #F9F3EF;
+            font-size: 0.9rem;
+        }
+
+        .popup a {
+            color: #1B3C53;
+            text-decoration: none;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .popup a:hover {
+            color: #F9F3EF;
+            text-shadow: 0 0 5px #F9F3EF;
+        }
+
+        .greentext::before {
+            content: '>';
+            color: #F9F3EF;
+            margin-right: 5px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #456882;
+            color: #F9F3EF;
+            border: none;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border-radius: 0;
+            touch-action: manipulation;
+        }
+
+        .config-input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            background: #1B3C53;
+            border: 2px solid #456882;
+            color: #F9F3EF;
+        }
+
+        .config-btn {
+            background: #456882;
+            color: #F9F3EF;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin: 5px;
+            touch-action: manipulation;
+        }
+
+        .config-btn:hover {
+            background: #F9F3EF;
+            color: #1B3C53;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(27, 60, 83, 0.8);
+            z-index: 999;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes popupIn {
+            0% { transform: translate(-50%, -70%) scale(0.7) rotate(-3deg); opacity: 0; }
+            80% { transform: translate(-50%, -50%) scale(1.05) rotate(1deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        @keyframes glow {
+            from { border-color: #456882; box-shadow: 0 0 5px #456882; }
+            to { border-color: #F9F3EF; box-shadow: 0 0 10px #F9F3EF; }
+        }
+
+        @media (max-width: 600px) {
+            .title { font-size: 1.5rem; }
+            .greeting { font-size: 0.9rem; }
+            .datetime { font-size: 0.8rem; }
+            .search-bar input { max-width: 220px; font-size: 0.8rem; padding: 8px; }
+            .search-bar button { padding: 8px 16px; font-size: 0.8rem; }
+            .category-btn { padding: 10px 20px; font-size: 0.8rem; min-width: 90px; }
+            .popup { max-width: 95%; padding: 12px; }
+            .popup h2 { font-size: 1rem; }
+            .popup li { font-size: 0.8rem; }
+            .close-btn { width: 28px; height: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    <div class="container">
+        <h1 class="title">/start/</h1>
+        <div class="greeting" id="greeting"></div>
+        <div class="datetime" id="datetime"></div>
+        <div class="search-bar">
+            <form action="https://www.startpage.com/sp/search" method="get" id="searchForm">
+                <input type="text" name="query" id="searchInput" placeholder=">search the web">
+                <button type="submit">Go</button>
+            </form>
+        </div>
+        <div class="button-container">
+            <button class="category-btn" onclick="showPopup('recent')" ontouchstart="showPopup('recent')">/recent/</button>
+            <button class="category-btn" onclick="showPopup('threads')" ontouchstart="showPopup('threads')">/threads/</button>
+            <button class="category-btn" onclick="showPopup('lurks')" ontouchstart="showPopup('lurks')">/lurks/</button>
+            <button class="category-btn" onclick="showPopup('media')" ontouchstart="showPopup('media')">/media/</button>
+            <button class="category-btn" onclick="showPopup('tools')" ontouchstart="showPopup('tools')">/tools/</button>
+            <button class="category-btn" onclick="showPopup('sys')" ontouchstart="showPopup('sys')">/sys/</button>
+            <button class="category-btn" onclick="showPopup('cmd')" ontouchstart="showPopup('cmd')">/cmd/</button>
+            <button class="category-btn" onclick="showPopup('config')" ontouchstart="showPopup('config')">/config/</button>
+        </div>
+    </div>
+
+    <div class="popup" id="recent">
+        <button class="close-btn" onclick="closePopup()" ontouchstart="closePopup()">×</button>
+        <h2>/recent/</h2>
+        <ul id="recent-threads">
+            <li class="greentext">>Loading threads...</li>
+        </ul>
+        <button class="config-btn" onclick="fetchThreads()" ontouchstart="fetchThreads()">Refresh Threads</button>
+        <button class="config-btn" onclick="window.location.href='recents.html'">View All Threads</button>
+    </div>
+
+    <div class="popup" id="threads">
+        <button class="close-btn" onclick="closePopup()" ontouchstart="closePopup()">×</button>
+        <h2>/threads/</h2>
+        <ul id="threads-list">
+            <li class="greentext"><a href="https://boards.4chan.org/g/" target="_blank">/g/ - Tech</a></li>
+            <li class="greentext"><a href="https://boards.4chan.org/tech/" target="_blank">/tech/ - Technology</a></li>
+            <li class="greentext"><a href="https://boards.4chan.org/pol/" target="_blank">/pol/ - Politics</a></li>
+            <li class="greentext"><a href="https://8kun.top/pol/" target="_blank">8kun /pol/</a></li>
+            <li class="greentext"><a href="https://zzzchan.xyz/" target="_blank">zzzchan</a></li>
+            <li class="greentext"><a href="https://soyjak.party/" target="_blank">Soyjak.party</a></li>
+            <li class="greentext"><a href="https://lainchan.org/" target="_blank">Lainchan</a></li>
+        </ul>
+    </div>
+
+    <div class="popup" id="lurks">
+        <button class="close-btn" onclick="closePopup()" ontouchstart="closePopup()">×</button>
+        <h2>/lurks/</h2>
+        <ul>
+            <li class="greentext"><a href="https://nitter.net/" target="_blank">Nitter</a></li>
+            <li class="greentext"><a href="https://www.reddit.com" target="_blank">Reddit</a></li>
+            <li class="greentext"><a href="https://x.com" target="_blank">X</a></li>
+            <li class="greentext"><a href="https://qalerts.app/" target="_blank">QAlerts</a></li>
+        </ul>
+    </div>
+
+    <div class="popup" id="media">
+        <button class="close-btn" onclick="closePopup()" ontouchstart="closePopup()">×</button>
+        <h2>/media/</h2>
+        <ul>
+            <li class="greentext"><a href="https://invidious.io/" target="_blank">Invidious</a></li>
+            <li class="greentext"><a href="https://catbox.moe/" target="_blank">Catbox</a></li>
+            <li class="greentext"><a href="https://open.spotify.com" target="_blank">Spotify</a></li>
+            <li class="greentext"><a href="https://music.youtube.com" target="_blank">YT Music</a></li>
+        </ul>
+    </div>
+
+    <div class="popup" id="tools">
+        <button class="close-btn" onclick="closePopup()" ontouchstart="closePopup()">×</button>
+        <h2>/tools/</h2>
+        <ul id="tools-list">
+            <li class="greentext"><a href="https://wiki.archlinux.org/" target="_blank">Arch Wiki</a></li>
+            <li class="greentext"><a href="https://www.distrowatch.com/" target="_blank">DistroWatch</a></li>
+            <li class="greentext"><a href="https://searxng.org/" target="_blank">SearXNG</a></li>
+            <li class="greentext"><a href="https://pastebin.com/" target="_blank">Pastebin</a></li>
+            <li class="greentext"><a href="https://proton.me/mail" target="_blank">Proton Mail</a></li>
+            <li class="greentext"><a href="https://gitlab.com/" target="_blank">GitLab</a></li>
+            <li class="greentext"><a href="https://stackoverflow.com/" target="_blank">Stack Overflow</a></li>
+        </ul>
+    </div>
+
+    <div class="popup" id="sys">
+        <button class="close-btn" onclick="closePopup()" ontouchstart="closePopup()">×</button>
+        <h2>/sys/</h2>
+        <ul>
+            <li class="greentext">>User Agent: <span id="user-agent"></span></li>
+            <li class="greentext">>Resolution: <span id="resolution"></span></li>
+            <li class="greentext">>Uptime: <span id="uptime"></span></li>
+        </ul>
+    </div>
+
+    <div class="popup" id="cmd">
+        <button class="close-btn" onclick="closePopup()" ontouchstart="closePopup()">×</button>
+        <h2>/cmd/</h2>
+        <ul>
+            <li><input class="config-input" id="cmd-input" placeholder=">yt [query], >arch [term], >g [board]"></li>
+            <li><button class="config-btn" onclick="runCommand()" ontouchstart="runCommand()">Run</button></li>
+        </ul>
+    </div>
+
+    <div class="popup" id="config">
+        <button class="close-btn" onclick="closePopup()" ontouchstart="closePopup()">×</button>
+        <h2>/config/</h2>
+        <ul>
+            <li class="greentext">>Add Thread Link</li>
+            <li><input class="config-input" id="new-thread" placeholder=">https://example.com"></li>
+            <li><button class="config-btn" onclick="addLink('threads-list', 'new-thread')" ontouchstart="addLink('threads-list', 'new-thread')">Add</button></li>
+            <li class="greentext">>Add Tool Link</li>
+            <li><input class="config-input" id="new-tool" placeholder=">https://example.com"></li>
+            <li><button class="config-btn" onclick="addLink('tools-list', 'new-tool')" ontouchstart="addLink('tools-list', 'new-tool')">Add</button></li>
+            <li class="greentext">>Sound: <button class="config-btn" onclick="toggleSound()" ontouchstart="toggleSound()">Toggle</button></li>
+        </ul>
+    </div>
+
+    <audio id="click-sound" src="data:audio/mpeg;base64,/+MXxAAAAAAAAAAAAFhpbmcAAAAPAAAABwAABwgAMDAwMDAwMDAwMDAwMDBaTUVGAAAAPAAAABwAABwgAMDAwMDAwMDAwMDAwMDBaTUVGAAAAQAAAAA=="></audio>
+
+    <script>
+        let soundEnabled = /Mobi|Android|iPhone|iPad/.test(navigator.userAgent) ? false : true;
+        let startTime = Date.now();
+
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            let greeting;
+            if (hour >= 5 && hour < 12) greeting = "Good Morning Anon";
+            else if (hour >= 12 && hour < 17) greeting = "Good Afternoon Anon";
+            else if (hour >= 17 && hour < 22) greeting = "Good Evening Anon";
+            else greeting = "Good Night Anon";
+            document.getElementById('greeting').textContent = `>${greeting}`;
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = String(now.getFullYear()).slice(-2);
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('datetime').textContent = `${day}/${month}/${year} ${hours}:${minutes}`;
+        }
+
+        function updateSystemInfo() {
+            document.getElementById('user-agent').textContent = navigator.userAgent;
+            document.getElementById('resolution').textContent = `${window.innerWidth}x${window.innerHeight}`;
+            const uptimeSeconds = Math.floor((Date.now() - startTime) / 1000);
+            const hours = Math.floor(uptimeSeconds / 3600);
+            const mins = Math.floor((uptimeSeconds % 3600) / 60);
+            const secs = uptimeSeconds % 60;
+            document.getElementById('uptime').textContent = `${hours}h ${mins}m ${secs}s`;
+        }
+
+        function stripHtml(html) {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            return div.textContent || div.innerText || '';
+        }
+
+        async function fetchThreads() {
+            const ul = document.getElementById('recent-threads');
+            ul.innerHTML = '<li class="greentext">>Loading threads...</li>';
+            try {
+                const response = await fetch('https://cors-anywhere.herokuapp.com/https://a.4cdn.org/g/threads.json');
+                const data = await response.json();
+                const threads = data[0].threads.slice(0, 5);
+                ul.innerHTML = '';
+                threads.forEach(thread => {
+                    const li = document.createElement('li');
+                    li.className = 'greentext';
+                    let title = thread.sub || (thread.com ? stripHtml(thread.com).slice(0, 50) + (thread.com.length > 50 ? '...' : '') : `Thread #${thread.no}`);
+                    li.innerHTML = `<a href="https://boards.4chan.org/g/thread/${thread.no}" target="_blank">${title} (${thread.replies} replies)</a>`;
+                    ul.appendChild(li);
+                });
+            } catch (e) {
+                ul.innerHTML = '<li class="greentext">>Error fetching threads (check CORS proxy at cors-anywhere.herokuapp.com/corsdemo)</li>';
+            }
+        }
+
+        function addLink(listId, inputId) {
+            const input = document.getElementById(inputId);
+            const url = input.value.trim();
+            if (url && url.startsWith('https://')) {
+                const list = document.getElementById(listId);
+                const li = document.createElement('li');
+                li.className = 'greentext';
+                li.innerHTML = `<a href="${url}" target="_blank">${url.split('/')[3] || 'Custom'}</a>`;
+                list.appendChild(li);
+                localStorage.setItem(listId, list.innerHTML);
+                input.value = '';
+                playSound();
+            }
+        }
+
+        function runCommand() {
+            const input = document.getElementById('cmd-input').value.trim();
+            if (input.startsWith('>')) {
+                const [cmd, ...args] = input.slice(1).split(' ');
+                const query = args.join('+');
+                if (cmd === 'yt') window.open(`https://invidious.io/search?q=${query}`, '_blank');
+                else if (cmd === 'arch') window.open(`https://wiki.archlinux.org/index.php?search=${query}`, '_blank');
+                else if (cmd === 'g') window.open(`https://boards.4chan.org/${query}/`, '_blank');
+                else alert('>Unknown command. Try >yt, >arch, or >g');
+                playSound();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem('soundEnabled', soundEnabled);
+            alert(`>Sound ${soundEnabled ? 'enabled' : 'disabled'}`);
+        }
+
+        function playSound() {
+            if (soundEnabled) {
+                const sound = document.getElementById('click-sound');
+                sound.currentTime = 0;
+                sound.play().catch(() => console.log('>Sound playback failed'));
+            }
+        }
+
+        function showPopup(id) {
+            document.querySelectorAll('.popup').forEach(p => {
+                p.style.display = 'none';
+                p.classList.remove('glow');
+            });
+            const popup = document.getElementById(id);
+            popup.style.display = 'block';
+            popup.classList.add('glow');
+            document.getElementById('overlay').style.display = 'block';
+            playSound();
+            if (id === 'sys') updateSystemInfo();
+            if (id === 'recent') fetchThreads();
+        }
+
+        function closePopup() {
+            document.querySelectorAll('.popup').forEach(p => {
+                p.style.display = 'none';
+                p.classList.remove('glow');
+            });
+            document.getElementById('overlay').style.display = 'none';
+            playSound();
+        }
+
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
+            const input = document.getElementById('searchInput').value.trim();
+            if (input === '>lurkmoar') {
+                e.preventDefault();
+                document.getElementById('greeting').innerHTML = `>Well done, Anon!<br>⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀`;
+                setTimeout(() => updateGreeting(), 3000);
+                playSound();
+            }
+        });
+
+        ['threads-list', 'tools-list'].forEach(id => {
+            const saved = localStorage.getItem(id);
+            if (saved) document.getElementById(id).innerHTML = saved;
+        });
+        soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+
+        updateGreeting();
+        updateTime();
+        setInterval(updateTime, 1000);
+        setInterval(updateGreeting, 60000);
+    </script>
+</body>
+</html>
