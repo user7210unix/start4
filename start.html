@@ -483,7 +483,7 @@
             if (input.startsWith('>')) {
                 const [cmd, ...args] = input.slice(1).split(' ');
                 const query = args.join('+');
-                if (cmd === 'yt') window.open(`https://invidious.io/search?q=${query}`, '_blank');
+                if (cmd === 'yt') window.open(`https://inv.nadeko.net/search?q=${query}`, '_blank');
                 else if (cmd === 'arch') window.open(`https://wiki.archlinux.org/index.php?search=${query}`, '_blank');
                 else if (cmd === 'g') window.open(`https://boards.4chan.org/${query}/`, '_blank');
                 else alert('>Unknown command. Try >yt, >arch, or >g');
