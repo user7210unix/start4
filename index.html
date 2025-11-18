@@ -4,468 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Startpage</title>
-    <style>
-        
-		@font-face {
-            font-family: 'Iosevka Nerd Font';
-            src: url('assets/fonts/IosevkaNerdFont-Bold.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Iosevka Nerd Font', monospace;
-            font-size: 11pt;
-            background: linear-gradient(rgba(15, 25, 35, 0.85), rgba(15, 25, 35, 0.85)), 
-                        url('assets/images/background-waves.webp');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #c5d1d8;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .help-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            padding: 8px 16px;
-            cursor: pointer;
-            font-weight: bold;
-            font-family: 'Iosevka Nerd Font', monospace;
-            font-size: 10pt;
-            transition: all 0.2s;
-            opacity: 0.7;
-            background: rgba(35, 50, 60, 0.9);
-            border: 1px solid rgba(100, 150, 180, 0.3);
-            color: #c5d1d8;
-            backdrop-filter: blur(10px);
-        }
-
-        .help-btn:hover {
-            opacity: 1;
-            transform: translateY(-2px);
-            border-color: #64a8d1;
-            box-shadow: 0 4px 12px rgba(100, 168, 209, 0.3);
-        }
-
-        .hero {
-            padding: 80px 40px 60px;
-            margin-bottom: 30px;
-            text-align: center;
-            background: linear-gradient(to bottom, rgba(20, 35, 45, 0.95), rgba(25, 40, 50, 0.9));
-            border: 1px solid rgba(100, 150, 180, 0.2);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .datetime-display {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .time {
-            font-size: 72pt;
-            font-weight: bold;
-            letter-spacing: 8px;
-            color: #64a8d1;
-            text-shadow: 0 0 30px rgba(100, 168, 209, 0.5),
-                         0 0 60px rgba(100, 168, 209, 0.3);
-            font-family: 'GohuMono', monospace;
-        }
-
-        .date {
-            font-size: 18pt;
-            letter-spacing: 4px;
-            color: #8eb4d1;
-            opacity: 0.9;
-        }
-
-        .day {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             font-size: 14pt;
-            letter-spacing: 3px;
-            color: #7aa3c1;
-            opacity: 0.7;
-            text-transform: uppercase;
-        }
-
-        .search-box {
-            padding: 25px;
-            margin-bottom: 25px;
-            background: rgba(25, 40, 50, 0.9);
-            border: 1px solid rgba(100, 150, 180, 0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .search-box input[type="text"] {
-            width: 100%;
-            padding: 14px 18px;
-            font-size: 13pt;
-            font-family: 'Gohu', monospace;
-            transition: all 0.3s;
-            outline: none;
-            background: rgba(35, 50, 60, 0.8);
-            border: 1px solid rgba(100, 150, 180, 0.3);
-            color: #c5d1d8;
-        }
-
-        .search-box input[type="text"]:focus {
-            border-color: #64a8d1;
-            box-shadow: 0 0 10px rgba(100, 168, 209, 0.3);
-        }
-
-        .search-box input[type="text"]::placeholder {
-            color: #7aa3c1;
-            opacity: 0.5;
-        }
-
-        .search-box form {
-            display: flex;
+            line-height: 1.5;
+            color: #cccccb;
+            background: url('https://wallpapercave.com/wp/uloVMHC.jpg') bottom right / cover fixed;
+            min-height: 100vh;
             position: relative;
         }
 
-        .section {
-            margin-bottom: 20px;
-            padding: 20px;
-            background: rgba(25, 40, 50, 0.9);
-            border: 1px solid rgba(100, 150, 180, 0.2);
-            backdrop-filter: blur(10px);
-            animation: fadeIn 0.4s ease-in;
+        /* Heavy dark overlay — matches 4chan exactly */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.68);
+            pointer-events: none;
+            z-index: -1;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        .container { max-width: 1480px; margin: 0 auto; padding: 24px; }
+
+        /* Unified glass style — identical to 4chan posts */
+        .hero, .search-box, .section, .help-btn, .shortcuts-content {
+            background: linear-gradient(90deg, rgba(0,0,0,0) 99%, rgba(0,0,0,0.25) 100%),
+                        linear-gradient(0deg, rgba(25,39,52,0.68) 80%, rgba(37,50,62,1) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(50,65,80,0.8);
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6),
+                        inset 1px 1px rgba(56,68,77,0.7),
+                        inset -1px -1px rgba(0,0,0,0.8);
         }
 
+        /* Hero clock */
+        .hero { padding: 100px 40px; text-align: center; margin-bottom: 28px; }
+        .time { font-size: 84pt; font-weight: 800; letter-spacing: 6px; color: #64a8d1; text-shadow: 0 0 40px rgba(100,168,209,0.6); }
+        .date { font-size: 21pt; letter-spacing: 4px; color: #8eb4d1; }
+        .day { font-size: 16pt; text-transform: uppercase; letter-spacing: 3px; color: #7aa3c1; opacity: 0.85; }
+
+        /* Search */
+        .search-box { padding: 32px; margin-bottom: 28px; }
+        .search-box input {
+            width: 100%; padding: 18px 22px; font-size: 14pt; background: rgba(25,39,52,0.85);
+            border: 1px solid rgba(100,150,180,0.4); border-radius: 4px; color: #fff; outline: none;
+        }
+        .search-box input:focus { border-color: #64a8d1; box-shadow: 0 0 16px rgba(100,168,209,0.4); }
+        .search-box input::placeholder { color: #7aa3c1; opacity: 0.7; }
+
+        /* Sections */
+        .section { margin-bottom: 24px; padding: 28px; }
         .section-title {
-            font-weight: bold;
-            font-size: 12pt;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            cursor: pointer;
-            user-select: none;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #64a8d1;
-            border-bottom: 1px solid rgba(100, 150, 180, 0.2);
+            font-weight: 700; font-size: 13pt; letter-spacing: 3px; text-transform: uppercase;
+            color: #64a8d1; cursor: pointer; user-select: none; padding-bottom: 12px;
+            border-bottom: 1px solid rgba(100,150,180,0.25); margin-bottom: 20px;
         }
+        .section-title::before { content: 'Down Arrow '; }
+        .section-title.collapsed::before { content: 'Right Arrow '; }
 
-        .section-title:hover {
-            opacity: 0.8;
-        }
-
-        .section-title::before {
-            content: '▼ ';
-            font-size: 9pt;
-            margin-right: 8px;
-        }
-
-        .section-title.collapsed::before {
-            content: '► ';
-        }
-
-        .section-content {
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .section-content.hidden {
-            display: none;
-        }
-
-        .links {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-            gap: 15px;
-        }
-
-        .link-item {
-            padding: 45px 18px 18px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            min-height: 110px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-            background: rgba(35, 50, 60, 0.85);
-            border: 1px solid rgba(100, 150, 180, 0.3);
-        }
-
-        .link-item:hover {
-            background: rgba(45, 65, 80, 0.9);
-            border-color: #64a8d1;
-            box-shadow: 0 4px 15px rgba(100, 168, 209, 0.3);
-        }
-
-        .link-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-size: cover;
-            background-position: center;
-            filter: blur(3px) brightness(0.6) contrast(1.1);
-            z-index: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .link-item:hover::before {
-            filter: blur(1px) brightness(0.75) contrast(1.2);
-            transform: scale(1.05);
-        }
-
-        .link-item > * {
-            position: relative;
-            z-index: 1;
-        }
-
-        .link-item span {
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
-            font-size: 11pt;
-            color: #fff;
-        }
-
-        /* Quick link backgrounds */
-        .link-youtube::before {
-            background-image: url('https://wallpapers.com/images/high/black-youtube-banner-bhadojaxac5w2ygv.webp');
-        }
-
-        .link-emacs::before {
-            background-image: url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=300&q=50');
-        }
-
-        .link-unixporn::before {
-            background-image: url('https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=300&q=50');
-        }
-
-        .link-unixart::before {
-            background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/bd352b8c-a72f-4c28-964a-dce0d18ec2f6/dbuh3yj-de9076aa-8990-4a4b-8874-26bd20ad4f47.png/v1/fill/w_1192,h_670,q_70,strp/x230___fvwm2_by_unixmafia_dbuh3yj-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzY4IiwicGF0aCI6Ii9mL2JkMzUyYjhjLWE3MmYtNGMyOC05NjRhLWRjZTBkMThlYzJmNi9kYnVoM3lqLWRlOTA3NmFhLTg5OTAtNGE0Yi04ODc0LTI2YmQyMGFkNGY0Ny5wbmciLCJ3aWR0aCI6Ijw9MTM2NiJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.NeLf6Z3kvprpK-XCpI3fUsHVWbVzMic2AvG8Gmk6Kto');
-        }
-
-        .link-github::before {
-            background-image: url('https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=300&q=50');
-        }
-
-        .link-hn::before {
-            background-image: url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=300&q=50');
-        }
-
-        .link-lobsters::before {
-            background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=300&q=50');
-        }
-
-        .link-programming::before {
-            background-image: url('https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=300&q=50');
-        }
-
-        .link-stackoverflow::before {
-            background-image: url('https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=300&q=50');
-        }
-
-        .link-oldreddit::before {
-            background-image: url('https://logowski.com/blog/reddit-logo-2005-mascot_1704790983897.webp');
-        }
-
-        .boards {
+        /* Grids */
+        .links, .boards {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-            gap: 15px;
+            gap: 20px;
         }
 
-        .board-link {
-            position: relative;
-            padding: 85px 22px 22px;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            backdrop-filter: blur(5px);
-            background: rgba(35, 50, 60, 0.85);
-            border: 1px solid rgba(100, 150, 180, 0.3);
+        .link-item, .board-link {
+            position: relative; overflow: hidden; border-radius: 6px; height: 130px;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            padding: 24px; text-decoration: none; transition: all 0.3s ease;
+            background: rgba(35,50,60,0.75); border: 1px solid rgba(100,150,180,0.3);
         }
-
-        .board-link:hover {
-            background: rgba(45, 65, 80, 0.9);
+        .link-item:hover, .board-link:hover {
+            transform: translateY(-6px);
+            background: rgba(45,65,80,0.95);
             border-color: #64a8d1;
-            box-shadow: 0 4px 15px rgba(100, 168, 209, 0.3);
+            box-shadow: 0 12px 28px rgba(100,168,209,0.35);
         }
 
-        .board-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-size: cover;
-            background-position: center;
-            filter: blur(3px) brightness(0.6) contrast(1.1);
-            z-index: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .link-item::before, .board-link::before {
+            content: ''; position: absolute; inset: 0;
+            background: var(--bg) center/cover no-repeat;
+            filter: blur(4px) brightness(0.55); transition: all 0.3s; z-index: 1;
+        }
+        .link-item:hover::before, .board-link:hover::before {
+            filter: blur(2px) brightness(0.75); transform: scale(1.06);
         }
 
-        .board-link:hover::before {
-            filter: blur(1px) brightness(0.75) contrast(1.2);
-            transform: scale(1.05);
+        .link-item span, .board-name, .board-desc {
+            position: relative; z-index: 2; text-shadow: 2px 2px 8px rgba(0,0,0,0.9); color: #fff;
         }
+        .board-name { font-size: 30pt; font-weight: 800; }
+        .board-desc { font-size: 11pt; opacity: 0.9; margin-top: 4px; }
 
-        .board-link > * {
-            position: relative;
-            z-index: 1;
-        }
+        /* Help button & shortcuts */
+        .help-btn { position: fixed; top: 24px; right: 24px; padding: 12px 20px; font-weight: 700; z-index: 1000; }
+        .shortcuts-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(10px); }
+        .shortcuts-overlay.show { display: flex; }
+        .shortcuts-content { padding: 44px; max-width: 580px; }
+        .shortcuts-content h2 { font-size: 17pt; color: #64a8d1; text-align: center; letter-spacing: 4px; margin-bottom: 32px; }
 
-        /* Board backgrounds */
-        .board-g::before {
-            background-image: url('https://hardforum.com/data/attachment-files/2018/11/173345_workstation.jpg');
-        }
+        /* Links */
+        a { color: #FF652F; text-decoration: none; }
+        a:hover { color: #FF8555; }
 
-        .board-b::before {
-            background-image: url('https://www.textbooktravel.com/wp-content/uploads/2015/09/Web-Kampala-Uganda-Editorial-Pecold.jpg');
-        }
-
-        .board-pol::before {
-            background-image: url('https://www.journalofdemocracy.org/wp-content/uploads/2022/10/GettyImages-1230733998-scaled.jpg');
-        }
-
-        .board-his::before {
-            background-image: url('https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=300&q=50');
-        }
-
-        .board-x::before {
-            background-image: url('https://cdn.britannica.com/40/248940-050-9500A6DD/ghostly-transparent-woman.jpg?w=300');
-        }
-
-        .board-out::before {
-            background-image: url('https://images.pexels.com/photos/3988366/pexels-photo-3988366.jpeg');
-        }
-
-        .board-endchan::before {
-            background-image: url('https://media.gettyimages.com/id/184253417/photo/nazi-sa-brownshirts-in-berlin-germany-ca-1933.webp?s=2048x2048&w=gi&k=20&c=PzOKlWKayuXspUsRAg2XkOh-5rq4P5JM9lc_xitLEXU=');
-        }
-
-        .board-8ch::before {
-            background-image: url('https://nationalaffairs.com/storage/app/resized/709/825/2c1/DiSalvo_resized_7098252c1f049e7cb8f436666ceceeb6153147dd.jpg');
-        }
-
-        .board-name {
-            font-size: 24pt;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .board-desc {
-            font-size: 10pt;
-            margin-top: 6px;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
-            color: #e0e0e0;
-        }
-
-        .stats {
-            text-align: center;
-            font-size: 10pt;
-            margin-top: 25px;
-            opacity: 0.6;
-        }
-
-        /* Keyboard shortcuts overlay */
-        .shortcuts-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            backdrop-filter: blur(5px);
-        }
-
-        .shortcuts-overlay.show {
-            display: flex;
-        }
-
-        .shortcuts-content {
-            padding: 35px;
-            max-width: 520px;
-            backdrop-filter: blur(10px);
-            background: rgba(25, 40, 50, 0.95);
-            border: 1px solid rgba(100, 150, 180, 0.3);
-            color: #c5d1d8;
-        }
-
-        .shortcuts-content h2 {
-            margin-bottom: 25px;
-            font-size: 14pt;
-            text-align: center;
-            letter-spacing: 3px;
-            color: #64a8d1;
-        }
-
-        .shortcut-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 11pt;
-        }
-
-        .shortcut-key {
-            font-weight: bold;
-            padding: 4px 12px;
-            border: 1px solid;
-            margin-left: 15px;
-            background: rgba(35, 50, 60, 0.8);
-            border-color: rgba(100, 150, 180, 0.3);
-        }
+        .stats { text-align: center; margin-top: 36px; opacity: 0.75; font-size: 13pt; }
 
         @media (max-width: 768px) {
-            .time {
-                font-size: 48pt;
-                letter-spacing: 4px;
-            }
-            .date {
-                font-size: 14pt;
-            }
-            .day {
-                font-size: 11pt;
-            }
-            .links {
-                grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-            }
-            .boards {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            }
+            .time { font-size: 56pt; }
+            .links, .boards { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
         }
     </style>
 </head>
@@ -491,35 +147,35 @@
             <div class="section-title" onclick="toggleSection('boards')">Boards</div>
             <div class="section-content" id="boards">
                 <div class="boards">
-                    <a href="https://boards.4chan.org/g/" class="board-link board-g" target="_blank">
+                    <a href="https://boards.4chan.org/g/" class="board-link board-g" style="--bg:url('https://hardforum.com/data/attachment-files/2018/11/173345_workstation.jpg')" target="_blank">
                         <div class="board-name">/g/</div>
                         <div class="board-desc">Technology</div>
                     </a>
-                    <a href="https://boards.4chan.org/b/" class="board-link board-b" target="_blank">
+                    <a href="https://boards.4chan.org/b/" class="board-link board-b" style="--bg:url('https://www.textbooktravel.com/wp-content/uploads/2015/09/Web-Kampala-Uganda-Editorial-Pecold.jpg')" target="_blank">
                         <div class="board-name">/b/</div>
                         <div class="board-desc">Random</div>
                     </a>
-                    <a href="https://boards.4chan.org/pol/" class="board-link board-pol" target="_blank">
+                    <a href="https://boards.4chan.org/pol/" class="board-link board-pol" style="--bg:url('https://www.journalofdemocracy.org/wp-content/uploads/2022/10/GettyImages-1230733998-scaled.jpg')" target="_blank">
                         <div class="board-name">/pol/</div>
                         <div class="board-desc">Politics</div>
                     </a>
-                    <a href="https://boards.4chan.org/his/" class="board-link board-his" target="_blank">
+                    <a href="https://boards.4chan.org/his/" class="board-link board-his" style="--bg:url('https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=300&q=50')" target="_blank">
                         <div class="board-name">/his/</div>
                         <div class="board-desc">History</div>
                     </a>
-                    <a href="https://boards.4chan.org/x/" class="board-link board-x" target="_blank">
+                    <a href="https://boards.4chan.org/x/" class="board-link board-x" style="--bg:url('https://cdn.britannica.com/40/248940-050-9500A6DD/ghostly-transparent-woman.jpg?w=300')" target="_blank">
                         <div class="board-name">/x/</div>
                         <div class="board-desc">Paranormal</div>
                     </a>
-                    <a href="https://boards.4chan.org/out/" class="board-link board-out" target="_blank">
+                    <a href="https://boards.4chan.org/out/" class="board-link board-out" style="--bg:url('https://images.pexels.com/photos/3988366/pexels-photo-3988366.jpeg')" target="_blank">
                         <div class="board-name">/out/</div>
                         <div class="board-desc">Outdoors</div>
                     </a>
-                    <a href="https://endchan.org/pol/" class="board-link board-endchan" target="_blank">
+                    <a href="https://endchan.org/pol/" class="board-link board-endchan" style="--bg:url('https://media.gettyimages.com/id/184253417/photo/nazi-sa-brownshirts-in-berlin-germany-ca-1933.webp')" target="_blank">
                         <div class="board-name">/pol/</div>
                         <div class="board-desc">Endchan</div>
                     </a>
-                    <a href="https://8ch.net/pol/" class="board-link board-8ch" target="_blank">
+                    <a href="https://8ch.net/pol/" class="board-link board-8ch" style="--bg:url('https://nationalaffairs.com/storage/app/resized/709/825/2c1/DiSalvo_resized_7098252c1f049e7cb8f436666ceceeb6153147dd.jpg')" target="_blank">
                         <div class="board-name">/pol/</div>
                         <div class="board-desc">8ch</div>
                     </a>
@@ -531,36 +187,16 @@
             <div class="section-title" onclick="toggleSection('links')">Quick Links</div>
             <div class="section-content" id="links">
                 <div class="links">
-                    <a href="https://www.youtube.com" class="link-item link-youtube" target="_blank">
-                        <span>YouTube</span>
-                    </a>
-                    <a href="https://www.gnu.org/software/emacs/manual/" class="link-item link-emacs" target="_blank">
-                        <span>Emacs Manual</span>
-                    </a>
-                    <a href="https://www.reddit.com/r/unixporn/" class="link-item link-unixporn" target="_blank">
-                        <span>r/unixporn</span>
-                    </a>
-                    <a href="https://www.reddit.com/r/unixart/" class="link-item link-unixart" target="_blank">
-                        <span>r/unixart</span>
-                    </a>
-                    <a href="https://github.com" class="link-item link-github" target="_blank">
-                        <span>GitHub</span>
-                    </a>
-                    <a href="https://news.ycombinator.com" class="link-item link-hn" target="_blank">
-                        <span>Hacker News</span>
-                    </a>
-                    <a href="https://lobste.rs" class="link-item link-lobsters" target="_blank">
-                        <span>Lobsters</span>
-                    </a>
-                    <a href="https://reddit.com/r/programming" class="link-item link-programming" target="_blank">
-                        <span>r/programming</span>
-                    </a>
-                    <a href="https://stackoverflow.com" class="link-item link-stackoverflow" target="_blank">
-                        <span>Stack Overflow</span>
-                    </a>
-                    <a href="https://old.reddit.com" class="link-item link-oldreddit" target="_blank">
-                        <span>Old Reddit</span>
-                    </a>
+                    <a href="https://www.youtube.com" class="link-item link-youtube" style="--bg:url('https://wallpapers.com/images/high/black-youtube-banner-bhadojaxac5w2ygv.webp')" target="_blank"><span>YouTube</span></a>
+                    <a href="https://www.gnu.org/software/emacs/manual/" class="link-item link-emacs" style="--bg:url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=300&q=50')" target="_blank"><span>Emacs Manual</span></a>
+                    <a href="https://www.reddit.com/r/unixporn/" class="link-item link-unixporn" style="--bg:url('https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=300&q=50')" target="_blank"><span>r/unixporn</span></a>
+                    <a href="https://www.reddit.com/r/unixart/" class="link-item link-unixart" style="--bg:url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/bd352b8c-a72f-4c28-964a-dce0d18ec2f6/dbuh3yj-de9076aa-8990-4a4b-8874-26bd20ad4f47.png')" target="_blank"><span>r/unixart</span></a>
+                    <a href="https://github.com" class="link-item link-github" style="--bg:url('https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=300&q=50')" target="_blank"><span>GitHub</span></a>
+                    <a href="https://news.ycombinator.com" class="link-item link-hn" style="--bg:url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=300&q=50')" target="_blank"><span>Hacker News</span></a>
+                    <a href="https://lobste.rs" class="link-item link-lobsters" style="--bg:url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=300&q=50')" target="_blank"><span>Lobsters</span></a>
+                    <a href="https://reddit.com/r/programming" class="link-item link-programming" style="--bg:url('https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=300&q=50')" target="_blank"><span>r/programming</span></a>
+                    <a href="https://stackoverflow.com" class="link-item link-stackoverflow" style="--bg:url('https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=300&q=50')" target="_blank"><span>Stack Overflow</span></a>
+                    <a href="https://old.reddit.com" class="link-item link-oldreddit" style="--bg:url('https://logowski.com/blog/reddit-logo-2005-mascot_1704790983897.webp')" target="_blank"><span>Old Reddit</span></a>
                 </div>
             </div>
         </div>
@@ -573,133 +209,59 @@
     <div class="shortcuts-overlay" id="shortcuts" onclick="hideShortcuts(event)">
         <div class="shortcuts-content" onclick="event.stopPropagation()">
             <h2>KEYBOARD SHORTCUTS</h2>
-            <div class="shortcut-item">
-                <span>Focus search</span>
-                <span class="shortcut-key">Ctrl+K</span>
-            </div>
-            <div class="shortcut-item">
-                <span>Focus search (alt)</span>
-                <span class="shortcut-key">/</span>
-            </div>
-            <div class="shortcut-item">
-                <span>Blur search</span>
-                <span class="shortcut-key">Esc</span>
-            </div>
-            <div class="shortcut-item">
-                <span>Show/hide shortcuts</span>
-                <span class="shortcut-key">?</span>
-            </div>
-            <div class="shortcut-item">
-                <span>Close shortcuts</span>
-                <span class="shortcut-key">Esc</span>
-            </div>
+            <div class="shortcut-item"><span>Focus search</span><span class="shortcut-key">Ctrl+K</span></div>
+            <div class="shortcut-item"><span>Focus search (alt)</span><span class="shortcut-key">/</span></div>
+            <div class="shortcut-item"><span>Blur search</span><span class="shortcut-key">Esc</span></div>
+            <div class="shortcut-item"><span>Show/hide shortcuts</span><span class="shortcut-key">?</span></div>
+            <div class="shortcut-item"><span>Close shortcuts</span><span class="shortcut-key">Esc</span></div>
         </div>
     </div>
 
     <script>
         let startTime = Date.now();
-
         function updateDateTime() {
             const now = new Date();
-            
-            // Time
             const h = String(now.getHours()).padStart(2, '0');
             const min = String(now.getMinutes()).padStart(2, '0');
             const s = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('time').textContent = `${h}:${min}:${s}`;
-            
-            // Date
-            const y = now.getFullYear();
-            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-            const month = months[now.getMonth()];
-            const d = String(now.getDate()).padStart(2, '0');
-            document.getElementById('date').textContent = `${d} ${month} ${y}`;
-            
-            // Day
-            const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-            const day = days[now.getDay()];
-            document.getElementById('day').textContent = day;
-        }
 
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+            const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+            document.getElementById('date').textContent = `${String(now.getDate()).padStart(2,'0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            document.getElementById('day').textContent = dayNames[now.getDay()];
+        }
         function updateUptime() {
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
-            const hours = Math.floor(elapsed / 3600);
-            const mins = Math.floor((elapsed % 3600) / 60);
-            const secs = elapsed % 60;
-            
-            let uptimeStr = '';
-            if (hours > 0) uptimeStr += `${hours}h `;
-            if (mins > 0 || hours > 0) uptimeStr += `${mins}m `;
-            uptimeStr += `${secs}s`;
-            
-            document.getElementById('uptime').textContent = uptimeStr;
+            const h = Math.floor(elapsed / 3600);
+            const m = Math.floor((elapsed % 3600) / 60);
+            const s = elapsed % 60;
+            document.getElementById('uptime').textContent = `${h?h+'h ':''}${m||h?m+'m ':''}${s}s`;
         }
-
         function updateStats() {
-            const linkCount = document.querySelectorAll('.link-item').length;
-            const boardCount = document.querySelectorAll('.board-link').length;
-            document.getElementById('linkCount').textContent = `${linkCount} links`;
-            document.getElementById('boardCount').textContent = `${boardCount} boards`;
+            document.getElementById('linkCount').textContent = document.querySelectorAll('.link-item').length + ' links';
+            document.getElementById('boardCount').textContent = document.querySelectorAll('.board-link').length + ' boards';
         }
-
         function toggleSection(id) {
             const content = document.getElementById(id);
             const title = content.previousElementSibling;
             content.classList.toggle('hidden');
             title.classList.toggle('collapsed');
-            localStorage.setItem('section-' + id, content.classList.contains('hidden') ? 'collapsed' : 'expanded');
+            localStorage.setItem('section-'+id, content.classList.contains('hidden')?'collapsed':'expanded');
         }
+        function handleSearch(e) { if (!document.getElementById('searchInput').value.trim()) { e.preventDefault(); return false; } return true; }
+        function showShortcuts() { document.getElementById('shortcuts').classList.add('show'); }
+        function hideShortcuts() { document.getElementById('shortcuts').classList.remove('show'); }
 
-        function handleSearch(e) {
-            const input = document.getElementById('searchInput');
-            if (!input.value.trim()) {
-                e.preventDefault();
-                return false;
-            }
-            return true;
-        }
+        ['boards','links'].forEach(id => { if (localStorage.getItem('section-'+id)==='collapsed') { document.getElementById(id).classList.add('hidden'); document.getElementById(id).previousElementSibling.classList.add('collapsed'); }});
 
-        function showShortcuts() {
-            document.getElementById('shortcuts').classList.add('show');
-        }
-
-        function hideShortcuts(e) {
-            document.getElementById('shortcuts').classList.remove('show');
-        }
-
-        // Load saved section states
-        ['boards', 'links'].forEach(id => {
-            const state = localStorage.getItem('section-' + id);
-            if (state === 'collapsed') {
-                const content = document.getElementById(id);
-                const title = content.previousElementSibling;
-                content.classList.add('hidden');
-                title.classList.add('collapsed');
-            }
+        document.addEventListener('keydown', e => {
+            if ((e.ctrlKey && e.key==='k') || (e.key==='/' && e.target.tagName!=='INPUT')) { e.preventDefault(); document.getElementById('searchInput').focus(); }
+            if (e.key==='Escape') { if (document.getElementById('shortcuts').classList.contains('show')) hideShortcuts(); else if (document.activeElement.id==='searchInput') document.getElementById('searchInput').blur(); }
+            if (e.key==='?' && e.target.tagName!=='INPUT') { e.preventDefault(); showShortcuts(); }
         });
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && e.target.tagName !== 'INPUT')) {
-                e.preventDefault();
-                document.getElementById('searchInput').focus();
-            }
-            if (e.key === 'Escape') {
-                if (document.getElementById('shortcuts').classList.contains('show')) {
-                    hideShortcuts();
-                } else if (document.activeElement.id === 'searchInput') {
-                    document.getElementById('searchInput').blur();
-                }
-            }
-            if (e.key === '?' && e.target.tagName !== 'INPUT') {
-                e.preventDefault();
-                showShortcuts();
-            }
-        });
-
-        // Initialize
-        updateDateTime();
-        updateStats();
+        updateDateTime(); updateStats();
         setInterval(updateDateTime, 1000);
         setInterval(updateUptime, 1000);
     </script>
