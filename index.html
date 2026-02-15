@@ -1,390 +1,979 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="ash">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>~/startpage</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<title>new tab</title>
 
-        body {
-            background-color: #002b36;
-            color: #eee8d5;
-            font-family: 'Inter', Arial, sans-serif;
-            font-size: 14px;
-            padding: 20px;
-            min-height: 100vh;
-        }
+<!--
+  ┌─────────────────────────────────────────────────────────┐
+  │  MOBILE STARTPAGE                                       │
+  │  Fine-art minimal · oneechan-border system             │
+  │  Four themes: ash / linen / bark / moss                │
+  │  Persistence: localStorage                             │
+  │  Favicons: Google favicon API                          │
+  └─────────────────────────────────────────────────────────┘
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+  Font strategy:
+    Cormorant Garamond  → clock / date (elegant serif, italic)
+    Inter               → UI labels, search (clean neutral)
+    JetBrains Mono      → board slugs, tags, badges
+-->
 
-        header {
-            text-align: center;
-            padding: 40px 0;
-            border-bottom: 1px solid #073642;
-            margin-bottom: 40px;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 
-        h1 {
-            font-size: 36px;
-            color: #eee8d5;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
+<style>
+/*──────────────────────────────────────────────────────────────
+  DESIGN TOKENS — every theme swaps only these variables.
+──────────────────────────────────────────────────────────────*/
 
-        .subtitle {
-            color: #93a1a1;
-            font-style: italic;
-        }
+/* ▸ THEME: ash — warm charcoal & slate (dark) */
+[data-theme="ash"] {
+  --bg:           #1c1c1e;
+  --surface:      #242426;
+  --surface-hi:   #2c2c30;
+  --border:       #38383c;
+  --border-dim:   #2c2c30;
+  --accent:       #9396a8;
+  --accent-hi:    #b8bccf;
+  --text:         #d4d0cc;
+  --text-dim:     #7a7870;
+  --text-faint:   #46454240;
+  --text-faint-s: #464542;
+  --clock:        #e8e4de;
+  --bg-img:       none;
+  --blur:         0px;
+}
 
-        .boards-section, .links-section {
-            background-color: #073642;
-            padding: 20px;
-            margin-bottom: 30px;
-            border: 1px solid #002b36;
-        }
+/* ▸ THEME: linen — warm cream & sand (light) */
+[data-theme="linen"] {
+  --bg:           #f4efe5;
+  --surface:      #faf7f2;
+  --surface-hi:   #eeead8;
+  --border:       #ddd6c0;
+  --border-dim:   #e6e0ce;
+  --accent:       #8a7660;
+  --accent-hi:    #5e4c38;
+  --text:         #352c20;
+  --text-dim:     #8a8070;
+  --text-faint:   #c0b8a880;
+  --text-faint-s: #c0b8a8;
+  --clock:        #1e180e;
+  --bg-img:       none;
+  --blur:         0px;
+}
 
-        .section-title {
-            color: #859900;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #002b36;
-            padding-bottom: 10px;
-            font-style: italic;
-        }
+/* ▸ THEME: bark — espresso parchment · LIGHT warm bg-image */
+[data-theme="bark"] {
+  --bg:           #ede0cc;
+  --surface:      rgba(252, 248, 240, 0.80);
+  --surface-hi:   rgba(240, 232, 216, 0.86);
+  --border:       rgba(140, 108, 68, 0.28);
+  --border-dim:   rgba(140, 108, 68, 0.14);
+  --accent:       #6e4e28;
+  --accent-hi:    #4a3018;
+  --text:         #342418;
+  --text-dim:     #9a8060;
+  --text-faint:   #c0a88080;
+  --text-faint-s: #c0a880;
+  --clock:        #281808;
+  /* Coffee morning light — Unsplash */
+  --bg-img:       url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80&fit=crop&auto=format');
+  --blur:         18px;
+}
 
-        .boards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-        }
+/* ▸ THEME: moss — sage & stone · LIGHT cool bg-image */
+[data-theme="moss"] {
+  --bg:           #dce6d8;
+  --surface:      rgba(248, 252, 246, 0.80);
+  --surface-hi:   rgba(232, 244, 230, 0.86);
+  --border:       rgba(60, 100, 60, 0.22);
+  --border-dim:   rgba(60, 100, 60, 0.10);
+  --accent:       #3e6848;
+  --accent-hi:    #284e34;
+  --text:         #1a2e20;
+  --text-dim:     #5a8060;
+  --text-faint:   #90c09080;
+  --text-faint-s: #90c090;
+  --clock:        #101e14;
+  /* Misty forest — Unsplash */
+  --bg-img:       url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80&fit=crop&auto=format');
+  --blur:         20px;
+}
 
-        .board-link {
-            background-color: #002b36;
-            padding: 15px;
-            text-align: center;
-            text-decoration: none;
-            color: #93a1a1;
-            border: 1px solid #073642;
-            transition: all 0.2s;
-            font-weight: 600;
-        }
+/*──────────────────────────────────────────────────────────────
+  RESET
+──────────────────────────────────────────────────────────────*/
+*,*::before,*::after { box-sizing: border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html { height: 100%; }
 
-        .board-link:hover {
-            background-color: #073642;
-            color: #2aa198;
-            border-color: #2aa198;
-        }
+body {
+  height: 100dvh;           /* dynamic viewport — avoids mobile chrome bar overlap */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg);
+  background-image: var(--bg-img);
+  background-size: cover;
+  background-position: center;
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  /* Respect notch / safe areas */
+  padding: max(env(safe-area-inset-top,0px),8px) 10px max(env(safe-area-inset-bottom,0px),8px);
+}
 
-        .board-name {
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
+/* Frosted-glass layer sits under everything, above bg-image */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  pointer-events: none;
+  z-index: 0;
+}
+body > * { position: relative; z-index: 1; }
 
-        .board-desc {
-            font-size: 11px;
-            color: #657b83;
-            font-style: italic;
-        }
+/*──────────────────────────────────────────────────────────────
+  CARD — base panel style (oneechan: hairline border, minimal bg)
+──────────────────────────────────────────────────────────────*/
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
 
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
+/*──────────────────────────────────────────────────────────────
+  SECTION MICRO-LABEL
+──────────────────────────────────────────────────────────────*/
+.lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint-s);
+  padding: 0 1px;
+  margin-bottom: 5px;
+  user-select: none;
+}
 
-        .link-category {
-            background-color: #002b36;
-            padding: 15px;
-            border: 1px solid #073642;
-        }
+/*──────────────────────────────────────────────────────────────
+  LAYOUT — flex column, fixed sections, flex-1 for links
+──────────────────────────────────────────────────────────────*/
+#hd             { flex-shrink: 0; margin-bottom: 7px; }
+#search-row     { flex-shrink: 0; margin-bottom: 7px; }
+#boards-sec     { flex-shrink: 0; margin-bottom: 7px; }
+#links-sec      { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 
-        .category-title {
-            color: #cb4b16;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+/*──────────────────────────────────────────────────────────────
+  HEADER
+──────────────────────────────────────────────────────────────*/
+#hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+}
 
-        .link-list {
-            list-style: none;
-        }
+#clock {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 40px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--clock);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
 
-        .link-list li {
-            margin-bottom: 8px;
-        }
+#dateline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 12.5px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-dim);
+  margin-top: 2px;
+  letter-spacing: 0.02em;
+}
 
-        .link-list a {
-            color: #93a1a1;
-            text-decoration: none;
-            transition: color 0.2s;
-            display: block;
-        }
+#hd-r { display: flex; align-items: center; gap: 6px; }
 
-        .link-list a:hover {
-            color: #2aa198;
-        }
+/* Engine pill — monospace, muted */
+#eng-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 4px 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color .14s, color .14s;
+}
+#eng-pill:active { border-color: var(--accent); color: var(--accent-hi); }
 
-        .link-list a::before {
-            content: ">";
-            color: #859900;
-            margin-right: 5px;
-            font-style: italic;
-        }
+/* Settings icon button */
+#btn-cfg {
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-dim);
+  transition: color .14s, border-color .14s;
+}
+#btn-cfg:active { color: var(--accent); border-color: var(--accent); }
 
-        footer {
-            text-align: center;
-            padding: 30px 0;
-            color: #657b83;
-            font-size: 12px;
-            border-top: 1px solid #073642;
-            margin-top: 40px;
-        }
+/* All inline SVG icons */
+.ico { display:block; width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; overflow:visible; }
 
-        .search-container {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+/*──────────────────────────────────────────────────────────────
+  SEARCH
+──────────────────────────────────────────────────────────────*/
+#search-row { display: flex; gap: 6px; }
 
-        #search {
-            width: 100%;
-            max-width: 600px;
-            padding: 12px 20px;
-            background-color: #073642;
-            border: 1px solid #002b36;
-            color: #eee8d5;
-            font-family: 'Inter', Arial, sans-serif;
-            font-size: 14px;
-        }
+#q {
+  flex: 1;
+  height: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0 12px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: max(16px, 1em);   /* ≥16px prevents iOS auto-zoom */
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color .14s;
+}
+#q::placeholder { color: var(--text-faint-s); font-weight: 300; }
+#q:focus { border-color: var(--accent); }
 
-        #search:focus {
-            outline: none;
-            border-color: #2aa198;
-        }
+#btn-go {
+  width: 40px; height: 40px;
+  flex-shrink: 0;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--surface);
+  transition: opacity .14s;
+}
+#btn-go:active { opacity: .7; }
+#btn-go .ico { stroke: currentColor; }
 
-        #search::placeholder {
-            color: #657b83;
-        }
-    </style>
+/*──────────────────────────────────────────────────────────────
+  BOARDS — /pol/ /g/ text only, 2-row accent border (oneechan)
+──────────────────────────────────────────────────────────────*/
+#boards-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+}
+
+.board {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--border);  /* top accent edge */
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-top-color .13s, background .13s;
+  user-select: none;
+}
+.board:active {
+  background: var(--surface-hi);
+  border-top-color: var(--accent);
+}
+
+.board span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--text-dim);
+  letter-spacing: -0.03em;
+  user-select: none;
+  transition: color .13s;
+}
+.board:active span { color: var(--accent-hi); }
+
+/*──────────────────────────────────────────────────────────────
+  QUICK LINKS — favicon + name, 2-col
+──────────────────────────────────────────────────────────────*/
+#links-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  overflow-y: auto;
+  align-content: start;
+  flex: 1;
+  min-height: 0;
+  /* hide scrollbar — page still scrollable for many custom links */
+  scrollbar-width: none;
+}
+#links-grid::-webkit-scrollbar { display: none; }
+
+.lnk {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 9px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background .13s, border-color .13s;
+}
+.lnk:active {
+  background: var(--surface-hi);
+  border-color: var(--accent);
+}
+
+/* favicon */
+.lnk-ico {
+  width: 13px; height: 13px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  object-fit: contain;
+  opacity: .8;
+}
+
+/* letter monogram fallback */
+.lnk-fb {
+  width: 13px; height: 13px;
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: var(--text-dim);
+  background: var(--surface-hi);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.lnk-name {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*──────────────────────────────────────────────────────────────
+  SETTINGS SHEET — bottom modal
+──────────────────────────────────────────────────────────────*/
+#ov {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.42);
+  z-index: 50;
+  display: flex; align-items: flex-end;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+#ov.open { opacity: 1; pointer-events: all; }
+
+#sheet {
+  width: 100%;
+  max-height: 88dvh;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  padding: 0 14px 36px;
+  overflow-y: auto;
+  transform: translateY(10px);
+  transition: transform .2s;
+}
+#ov.open #sheet { transform: translateY(0); }
+
+/* drag pill */
+.sheet-pill {
+  display: flex; justify-content: center;
+  padding: 12px 0 10px;
+}
+.sheet-pill::before {
+  content: '';
+  width: 34px; height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.sh-head {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.sh-grp { margin-bottom: 14px; }
+
+.sh-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-faint-s);
+  margin-bottom: 6px;
+}
+
+/* chip row */
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.chip {
+  height: 28px;
+  padding: 0 10px;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: .04em;
+  color: var(--text-dim);
+  cursor: pointer;
+  user-select: none;
+  transition: border-color .13s, color .13s;
+}
+.chip.on { border-color: var(--accent); color: var(--accent-hi); }
+.chip:active { opacity: .75; }
+
+/* select */
+.sh-sel {
+  width: 100%;
+  height: 32px;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 0 10px;
+  outline: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.sh-hr { height: 1px; background: var(--border-dim); margin: 12px 0; }
+
+/* input row */
+.sh-row { display: flex; gap: 5px; margin-bottom: 5px; }
+
+.sh-in {
+  flex: 1; min-width: 0;
+  height: 30px;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 0 8px;
+  outline: none;
+}
+.sh-in:focus { border-color: var(--accent); }
+.sh-in::placeholder { color: var(--text-faint-s); }
+
+.sh-btn {
+  height: 30px;
+  padding: 0 12px;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.sh-btn.p {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--surface);
+}
+.sh-btn:active { opacity: .75; }
+
+/* saved sites */
+#saved { display: flex; flex-direction: column; gap: 4px; }
+
+.sv-row {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 8px;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.sv-row span {
+  flex: 1;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sv-row button {
+  background: none; border: none;
+  color: var(--text-faint-s);
+  font-size: 15px; line-height: 1;
+  cursor: pointer; padding: 0 2px; flex-shrink: 0;
+}
+.sv-row button:active { color: #d44; }
+
+.empty {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-faint-s);
+  padding: 2px 0;
+}
+
+/*──────────────────────────────────────────────────────────────
+  TOAST
+──────────────────────────────────────────────────────────────*/
+#toast {
+  position: fixed;
+  bottom: 22px; left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: .06em;
+  color: var(--accent);
+  opacity: 0; pointer-events: none;
+  transition: opacity .17s, transform .17s;
+  z-index: 99; white-space: nowrap;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/*──────────────────────────────────────────────────────────────
+  ENTRANCE — staggered fade-up
+──────────────────────────────────────────────────────────────*/
+@keyframes up {
+  from { opacity:0; transform: translateY(7px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+#hd         { animation: up .22s ease both .00s; }
+#search-row { animation: up .22s ease both .05s; }
+#boards-sec { animation: up .22s ease both .09s; }
+#links-sec  { animation: up .22s ease both .13s; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>~/startpage</h1>
-            <p class="subtitle" id="datetime"></p>
-        </header>
 
-        <div class="search-container">
-            <input type="text" id="search" placeholder="search or enter url..." autofocus>
-        </div>
+<!-- ════════════════ HEADER ════════════════ -->
+<header id="hd" class="card">
+  <div>
+    <div id="clock">00:00</div>
+    <div id="dateline">—</div>
+  </div>
+  <div id="hd-r">
+    <div id="eng-pill">ddg</div>
+    <div id="btn-cfg">
+      <!-- sliders icon — pure SVG, no emoji, no external sprite -->
+      <svg class="ico" viewBox="0 0 16 16">
+        <line x1="1" y1="4"  x2="15" y2="4"/>
+        <line x1="1" y1="8"  x2="15" y2="8"/>
+        <line x1="1" y1="12" x2="15" y2="12"/>
+        <circle cx="4.5" cy="4"  r="1.5" fill="var(--surface)"/>
+        <circle cx="10"  cy="8"  r="1.5" fill="var(--surface)"/>
+        <circle cx="6.5" cy="12" r="1.5" fill="var(--surface)"/>
+      </svg>
+    </div>
+  </div>
+</header>
 
-        <div class="boards-section">
-            <h2 class="section-title">// boards</h2>
-            <div class="boards-grid">
-                <a href="https://boards.4chan.org/g/" class="board-link">
-                    <div class="board-name">/g/</div>
-                    <div class="board-desc">technology</div>
-                </a>
-                <a href="https://boards.4chan.org/b/" class="board-link">
-                    <div class="board-name">/b/</div>
-                    <div class="board-desc">random</div>
-                </a>
-                <a href="https://boards.4chan.org/pol/" class="board-link">
-                    <div class="board-name">/pol/</div>
-                    <div class="board-desc">politically incorrect</div>
-                </a>
-                <a href="https://boards.4chan.org/hr/" class="board-link">
-                    <div class="board-name">/hr/</div>
-                    <div class="board-desc">high resolution</div>
-                </a>
-                <a href="https://boards.4chan.org/wg/" class="board-link">
-                    <div class="board-name">/wg/</div>
-                    <div class="board-desc">wallpapers</div>
-                </a>
-                <a href="https://boards.4chan.org/x/" class="board-link">
-                    <div class="board-name">/x/</div>
-                    <div class="board-desc">paranormal</div>
-                </a>
-                <a href="https://boards.4chan.org/out/" class="board-link">
-                    <div class="board-name">/out/</div>
-                    <div class="board-desc">outdoors</div>
-                </a>
-                <a href="https://boards.4chan.org/bant/" class="board-link">
-                    <div class="board-name">/bant/</div>
-                    <div class="board-desc">international/random</div>
-                </a>
-                <a href="https://boards.4chan.org/jp/" class="board-link">
-                    <div class="board-name">/jp/</div>
-                    <div class="board-desc">otaku culture</div>
-                </a>
-                <a href="https://boards.4chan.org/a/" class="board-link">
-                    <div class="board-name">/a/</div>
-                    <div class="board-desc">anime & manga</div>
-                </a>
-                <a href="https://boards.4chan.org/v/" class="board-link">
-                    <div class="board-name">/v/</div>
-                    <div class="board-desc">video games</div>
-                </a>
-                <a href="https://boards.4chan.org/mu/" class="board-link">
-                    <div class="board-name">/mu/</div>
-                    <div class="board-desc">music</div>
-                </a>
-            </div>
-        </div>
+<!-- ════════════════ SEARCH ════════════════ -->
+<div id="search-row">
+  <input id="q" type="search" placeholder="search…"
+    autocomplete="off" autocorrect="off"
+    autocapitalize="off" spellcheck="false"
+    enterkeyhint="search"/>
+  <button id="btn-go">
+    <!-- arrow-right icon -->
+    <svg class="ico" viewBox="0 0 16 16">
+      <line x1="3" y1="8" x2="13" y2="8"/>
+      <polyline points="9,4 13,8 9,12"/>
+    </svg>
+  </button>
+</div>
 
-        <div class="links-section">
-            <h2 class="section-title">// links</h2>
-            <div class="links-grid">
-                <div class="link-category">
-                    <h3 class="category-title">AI & Chat</h3>
-                    <ul class="link-list">
-                        <li><a href="https://claude.ai/">Claude AI</a></li>
-                        <li><a href="https://chat.openai.com/">ChatGPT</a></li>
-                        <li><a href="https://gemini.google.com/">Google Gemini</a></li>
-                        <li><a href="https://grok.x.ai/">Grok AI</a></li>
-                        <li><a href="https://www.perplexity.ai/">Perplexity</a></li>
-                    </ul>
-                </div>
+<!-- ════════════════ BOARDS ════════════════ -->
+<section id="boards-sec">
+  <div class="lbl">boards</div>
+  <div id="boards-grid">
+    <a class="board" href="https://boards.4chan.org/b/"   target="_blank" rel="noopener"><span>/b/</span></a>
+    <a class="board" href="https://boards.4chan.org/pol/" target="_blank" rel="noopener"><span>/pol/</span></a>
+    <a class="board" href="https://boards.4chan.org/g/"   target="_blank" rel="noopener"><span>/g/</span></a>
+    <a class="board" href="https://boards.4chan.org/mu/"  target="_blank" rel="noopener"><span>/mu/</span></a>
+    <a class="board" href="https://boards.4chan.org/tv/"  target="_blank" rel="noopener"><span>/tv/</span></a>
+    <a class="board" href="https://boards.4chan.org/v/"   target="_blank" rel="noopener"><span>/v/</span></a>
+    <a class="board" href="https://boards.4chan.org/fit/" target="_blank" rel="noopener"><span>/fit/</span></a>
+    <a class="board" href="https://boards.4chan.org/lit/" target="_blank" rel="noopener"><span>/lit/</span></a>
+    <a class="board" href="https://boards.4chan.org/a/"   target="_blank" rel="noopener"><span>/a/</span></a>
+    <a class="board" href="https://boards.4chan.org/wg/"  target="_blank" rel="noopener"><span>/wg/</span></a>
+  </div>
+</section>
 
-                <div class="link-category">
-                    <h3 class="category-title">Social</h3>
-                    <ul class="link-list">
-                        <li><a href="https://www.youtube.com/">YouTube</a></li>
-                        <li><a href="https://www.reddit.com/">Reddit</a></li>
-                        <li><a href="https://twitter.com/">Twitter/X</a></li>
-                        <li><a href="https://www.twitch.tv/">Twitch</a></li>
-                    </ul>
-                </div>
+<!-- ════════════════ QUICK LINKS ════════════════ -->
+<section id="links-sec">
+  <div class="lbl">links</div>
+  <div id="links-grid">
+    <!-- Populated by JS — static defaults + user custom sites -->
+  </div>
+</section>
 
-                <div class="link-category">
-                    <h3 class="category-title">Programming</h3>
-                    <ul class="link-list">
-                        <li><a href="https://github.com/">GitHub</a></li>
-                        <li><a href="https://stackoverflow.com/">Stack Overflow</a></li>
-                        <li><a href="https://gitlab.com/">GitLab</a></li>
-                        <li><a href="https://www.hackerrank.com/">HackerRank</a></li>
-                        <li><a href="https://leetcode.com/">LeetCode</a></li>
-                    </ul>
-                </div>
+<!-- ════════════════ SETTINGS MODAL ════════════════ -->
+<div id="ov">
+  <div id="sheet">
+    <div class="sheet-pill"></div>
+    <div class="sh-head">settings</div>
 
-                <div class="link-category">
-                    <h3 class="category-title">Dev Resources</h3>
-                    <ul class="link-list">
-                        <li><a href="https://developer.mozilla.org/">MDN Web Docs</a></li>
-                        <li><a href="https://devdocs.io/">DevDocs</a></li>
-                        <li><a href="https://www.w3schools.com/">W3Schools</a></li>
-                        <li><a href="https://css-tricks.com/">CSS-Tricks</a></li>
-                    </ul>
-                </div>
-
-                <div class="link-category">
-                    <h3 class="category-title">Tools</h3>
-                    <ul class="link-list">
-                        <li><a href="https://monkeytype.com/">Monkeytype</a></li>
-                        <li><a href="https://www.regex101.com/">Regex101</a></li>
-                        <li><a href="https://caniuse.com/">Can I Use</a></li>
-                        <li><a href="https://www.speedtest.net/">Speedtest</a></li>
-                    </ul>
-                </div>
-
-                <div class="link-category">
-                    <h3 class="category-title">News & Tech</h3>
-                    <ul class="link-list">
-                        <li><a href="https://news.ycombinator.com/">Hacker News</a></li>
-                        <li><a href="https://lobste.rs/">Lobsters</a></li>
-                        <li><a href="https://arstechnica.com/">Ars Technica</a></li>
-                        <li><a href="https://www.theverge.com/">The Verge</a></li>
-                    </ul>
-                </div>
-
-                <div class="link-category">
-                    <h3 class="category-title">Linux & FOSS</h3>
-                    <ul class="link-list">
-                        <li><a href="https://archlinux.org/">Arch Linux</a></li>
-                        <li><a href="https://wiki.archlinux.org/">Arch Wiki</a></li>
-                        <li><a href="https://www.debian.org/">Debian</a></li>
-                        <li><a href="https://www.gentoo.org/">Gentoo</a></li>
-                    </ul>
-                </div>
-
-                <div class="link-category">
-                    <h3 class="category-title">Media</h3>
-                    <ul class="link-list">
-                        <li><a href="https://www.netflix.com/">Netflix</a></li>
-                        <li><a href="https://www.spotify.com/">Spotify</a></li>
-                        <li><a href="https://www.imgur.com/">Imgur</a></li>
-                        <li><a href="https://www.soundcloud.com/">SoundCloud</a></li>
-                    </ul>
-                </div>
-
-                <div class="link-category">
-                    <h3 class="category-title">Misc</h3>
-                    <ul class="link-list">
-                        <li><a href="https://gmail.com/">Gmail</a></li>
-                        <li><a href="https://www.wolframalpha.com/">Wolfram Alpha</a></li>
-                        <li><a href="https://www.wikipedia.org/">Wikipedia</a></li>
-                        <li><a href="https://translate.google.com/">Google Translate</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            <p>Press Ctrl+K to focus search • Made with Solarized Dark</p>
-        </footer>
+    <div class="sh-grp">
+      <div class="sh-lbl">theme</div>
+      <div class="chips" id="t-chips">
+        <button class="chip" data-v="ash">ash</button>
+        <button class="chip" data-v="linen">linen</button>
+        <button class="chip" data-v="bark">bark</button>
+        <button class="chip" data-v="moss">moss</button>
+      </div>
     </div>
 
-    <script>
-        const search = document.getElementById('search');
-        
-        // Update date and time
-        function updateDateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
-            document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
-        }
-        
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-        
-        search.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const query = search.value.trim();
-                if (query) {
-                    if (query.includes('.') && !query.includes(' ')) {
-                        window.location.href = query.startsWith('http') ? query : 'https://' + query;
-                    } else {
-                        window.location.href = 'https://www.google.com/search?q=' + encodeURIComponent(query);
-                    }
-                }
-            }
-        });
+    <div class="sh-grp">
+      <div class="sh-lbl">search engine</div>
+      <div class="chips" id="e-chips">
+        <button class="chip" data-v="ddg">duckduckgo</button>
+        <button class="chip" data-v="google">google</button>
+        <button class="chip" data-v="startpage">startpage</button>
+        <button class="chip" data-v="brave">brave</button>
+        <button class="chip" data-v="kagi">kagi</button>
+        <button class="chip" data-v="searx">searxng</button>
+      </div>
+    </div>
 
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'k') {
-                e.preventDefault();
-                search.focus();
-            }
-        });
-    </script>
+    <div class="sh-grp">
+      <div class="sh-lbl">date format</div>
+      <select class="sh-sel" id="d-fmt">
+        <option value="dmy">dd / mm / yyyy</option>
+        <option value="mdy">mm / dd / yyyy</option>
+        <option value="iso">yyyy-mm-dd  (ISO)</option>
+        <option value="long">Weekday, Month Day</option>
+        <option value="unix">unix timestamp</option>
+      </select>
+    </div>
+
+    <div class="sh-hr"></div>
+
+    <div class="sh-grp">
+      <div class="sh-lbl">add site</div>
+      <div class="sh-row">
+        <input class="sh-in" id="in-n" placeholder="name"/>
+        <input class="sh-in" id="in-u" placeholder="url"/>
+      </div>
+      <div class="sh-row">
+        <button class="sh-btn p" id="btn-add">+ add</button>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-faint-s);align-self:center;padding-left:5px;">favicon auto-fetched</span>
+      </div>
+    </div>
+
+    <div class="sh-grp">
+      <div class="sh-lbl">saved sites</div>
+      <div id="saved"></div>
+    </div>
+
+    <div class="sh-hr"></div>
+    <div style="text-align:right;">
+      <button class="sh-btn" id="btn-rst">reset defaults</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  DATA
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+
+/* Static default quick links.
+   domain key drives the Google favicon API.  */
+const LINKS = [
+  { n:'GitHub',         u:'https://github.com',                       d:'github.com'       },
+  { n:'Hacker News',    u:'https://news.ycombinator.com',             d:'ycombinator.com'  },
+  { n:'Lobsters',       u:'https://lobste.rs',                        d:'lobste.rs'        },
+  { n:'Reddit',         u:'https://old.reddit.com',                   d:'reddit.com'       },
+  { n:'Letterboxd',     u:'https://letterboxd.com',                   d:'letterboxd.com'   },
+  { n:'Last.fm',        u:'https://www.last.fm',                      d:'last.fm'          },
+  { n:'Are.na',         u:'https://www.are.na',                       d:'are.na'           },
+  { n:'Inoreader',      u:'https://www.inoreader.com',                d:'inoreader.com'    },
+  { n:'Discogs',        u:'https://www.discogs.com',                  d:'discogs.com'      },
+  { n:'Bandcamp',       u:'https://bandcamp.com',                     d:'bandcamp.com'     },
+  { n:'Wikipedia',      u:'https://en.wikipedia.org',                 d:'wikipedia.org'    },
+  { n:'Wolfram\u03b1',  u:'https://www.wolframalpha.com',             d:'wolframalpha.com' },
+];
+
+const ENGINES = {
+  ddg:       { l:'ddg',       q:'https://duckduckgo.com/?q='              },
+  google:    { l:'google',    q:'https://www.google.com/search?q='        },
+  startpage: { l:'startpage', q:'https://www.startpage.com/search?q='     },
+  brave:     { l:'brave',     q:'https://search.brave.com/search?q='      },
+  kagi:      { l:'kagi',      q:'https://kagi.com/search?q='              },
+  searx:     { l:'searxng',   q:'https://searx.be/search?q='              },
+};
+
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  STATE
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+const DEF = { theme:'ash', engine:'ddg', fmt:'dmy', sites:[] };
+let S = { ...DEF };
+
+const load = () => {
+  try { const r=localStorage.getItem('sp3'); if(r) S={...DEF,...JSON.parse(r)}; }
+  catch(_) { S={...DEF}; }
+};
+const save = () => localStorage.setItem('sp3', JSON.stringify(S));
+
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  CLOCK
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+const $c = document.getElementById('clock');
+const $d = document.getElementById('dateline');
+const p  = n => String(n).padStart(2,'0');
+const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DA = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function fmt(d) {
+  const [Y,M,D] = [d.getFullYear(), p(d.getMonth()+1), p(d.getDate())];
+  if (S.fmt==='dmy')  return `${D} / ${M} / ${Y}`;
+  if (S.fmt==='mdy')  return `${M} / ${D} / ${Y}`;
+  if (S.fmt==='iso')  return `${Y}-${M}-${D}`;
+  if (S.fmt==='long') return `${DA[d.getDay()]},  ${MO[d.getMonth()]} ${d.getDate()}`;
+  if (S.fmt==='unix') return `${Math.floor(d/1000)}`;
+  return `${D} / ${M} / ${Y}`;
+}
+
+function tick() {
+  const n=new Date();
+  $c.textContent = `${p(n.getHours())}:${p(n.getMinutes())}`;
+  $d.textContent = fmt(n);
+}
+
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  THEME
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+const applyTheme = () =>
+  document.documentElement.setAttribute('data-theme', S.theme);
+
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  LINKS — build DOM + favicon
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+function favi(domain) {
+  return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
+}
+
+/* Extract hostname from an arbitrary url string */
+function host(url) {
+  try { return new URL(url.startsWith('http') ? url : 'https://'+url).hostname.replace(/^www\./,''); }
+  catch(_) { return url; }
+}
+
+function mkLink({ n, u, d }) {
+  const href   = u.startsWith('http') ? u : 'https://'+u;
+  const domain = d || host(href);
+  const a      = document.createElement('a');
+  a.className  = 'lnk';
+  a.href       = href;
+  a.target     = '_blank';
+  a.rel        = 'noopener';
+
+  const img    = document.createElement('img');
+  img.className= 'lnk-ico';
+  img.src      = favi(domain);
+  img.alt      = '';
+  img.loading  = 'lazy';
+  img.onerror  = function() {
+    const fb       = document.createElement('span');
+    fb.className   = 'lnk-fb';
+    fb.textContent = n.charAt(0).toUpperCase();
+    img.replaceWith(fb);
+  };
+
+  const nm     = document.createElement('span');
+  nm.className = 'lnk-name';
+  nm.textContent = n;
+
+  a.append(img, nm);
+  return a;
+}
+
+function renderLinks() {
+  const g = document.getElementById('links-grid');
+  g.innerHTML = '';
+  LINKS.forEach(l => g.appendChild(mkLink(l)));
+  (S.sites||[]).forEach(l => g.appendChild(mkLink({ n:l.n, u:l.u })));
+}
+
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  ENGINE BADGE
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+const applyEng = () =>
+  document.getElementById('eng-pill').textContent = ENGINES[S.engine]?.l ?? 'ddg';
+
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  SEARCH
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+function search() {
+  const v = document.getElementById('q').value.trim();
+  if(!v) return;
+  window.open((ENGINES[S.engine]?.q ?? ENGINES.ddg.q)+encodeURIComponent(v), '_blank');
+  document.getElementById('q').value='';
+}
+
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  MODAL
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+const ov = document.getElementById('ov');
+const openModal  = () => { syncUI(); ov.classList.add('open'); };
+const closeModal = () => ov.classList.remove('open');
+
+function syncUI() {
+  document.querySelectorAll('#t-chips .chip').forEach(c =>
+    c.classList.toggle('on', c.dataset.v===S.theme));
+  document.querySelectorAll('#e-chips .chip').forEach(c =>
+    c.classList.toggle('on', c.dataset.v===S.engine));
+  document.getElementById('d-fmt').value = S.fmt;
+  renderSaved();
+}
+
+function renderSaved() {
+  const el = document.getElementById('saved');
+  el.innerHTML='';
+  if(!(S.sites||[]).length) {
+    const d=document.createElement('div');
+    d.className='empty'; d.textContent='no custom sites yet'; el.appendChild(d); return;
+  }
+  S.sites.forEach((s,i) => {
+    const r   = document.createElement('div'); r.className='sv-row';
+    const sp  = document.createElement('span'); sp.textContent=`${s.n}  —  ${s.u}`;
+    const btn = document.createElement('button'); btn.textContent='×';
+    btn.addEventListener('click', () => {
+      S.sites.splice(i,1); save(); renderLinks(); renderSaved(); toast('removed');
+    });
+    r.append(sp,btn); el.appendChild(r);
+  });
+}
+
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  TOAST
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>t.classList.remove('show'),1500);
+}
+
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  EVENTS
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+document.getElementById('btn-go').onclick = search;
+document.getElementById('q').onkeydown = e => { if(e.key==='Enter') search(); };
+
+// cycle engine on badge tap
+document.getElementById('eng-pill').onclick = () => {
+  const k=Object.keys(ENGINES), i=k.indexOf(S.engine);
+  S.engine=k[(i+1)%k.length]; applyEng(); save(); toast(ENGINES[S.engine].l);
+};
+
+document.getElementById('btn-cfg').onclick = openModal;
+ov.onclick = e => { if(e.target===ov) closeModal(); };
+
+// theme chips
+document.getElementById('t-chips').onclick = e => {
+  const c=e.target.closest('.chip'); if(!c) return;
+  S.theme=c.dataset.v; applyTheme(); save(); syncUI(); toast('theme → '+S.theme);
+};
+
+// engine chips
+document.getElementById('e-chips').onclick = e => {
+  const c=e.target.closest('.chip'); if(!c) return;
+  S.engine=c.dataset.v; applyEng(); save(); syncUI(); toast(ENGINES[S.engine].l);
+};
+
+// date format
+document.getElementById('d-fmt').onchange = e => {
+  S.fmt=e.target.value; save(); tick();
+};
+
+// add site
+document.getElementById('btn-add').onclick = () => {
+  const n=document.getElementById('in-n').value.trim();
+  const u=document.getElementById('in-u').value.trim();
+  if(!n||!u){ toast('name + url required'); return; }
+  S.sites=S.sites||[];
+  S.sites.push({n,u});
+  save();
+  document.getElementById('in-n').value='';
+  document.getElementById('in-u').value='';
+  renderLinks(); renderSaved(); toast('+ '+n);
+};
+
+// reset
+document.getElementById('btn-rst').onclick = () => {
+  if(!confirm('Reset all settings?')) return;
+  localStorage.removeItem('sp3');
+  S={...DEF}; applyTheme(); applyEng(); renderLinks(); syncUI(); toast('reset');
+};
+
+/*
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  INIT
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+(function(){
+  load();
+  applyTheme();
+  applyEng();
+  renderLinks();
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
 </body>
 </html>
