@@ -1,979 +1,680 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="ash">
+<html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>new tab</title>
-
-<!--
-  ┌─────────────────────────────────────────────────────────┐
-  │  MOBILE STARTPAGE                                       │
-  │  Fine-art minimal · oneechan-border system             │
-  │  Four themes: ash / linen / bark / moss                │
-  │  Persistence: localStorage                             │
-  │  Favicons: Google favicon API                          │
-  └─────────────────────────────────────────────────────────┘
-
-  Font strategy:
-    Cormorant Garamond  → clock / date (elegant serif, italic)
-    Inter               → UI labels, search (clean neutral)
-    JetBrains Mono      → board slugs, tags, badges
--->
-
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>startpage</title>
 <style>
-/*──────────────────────────────────────────────────────────────
-  DESIGN TOKENS — every theme swaps only these variables.
-──────────────────────────────────────────────────────────────*/
+  /* ── design tokens ─────────────────────────────────────────────── */
+  :root {
+    --c-bg:          #000000;
+    --c-bg1:         #0d0d0d;
+    --c-bg2:         #1a1a1a;
+    --c-border:      #2a2a2a;
+    --c-border-hi:   #3a3a3a;
+    --c-fg:          #d4d4d4;
+    --c-fg-dim:      #666666;
+    --c-fg-faint:    #333333;
+    --c-teal:        #1a5f5f;
+    --c-teal-hi:     #1f7070;
+    --c-teal-text:   #2a9090;
+    --c-danger:      #7a2222;
+    --c-danger-hi:   #aa2222;
 
-/* ▸ THEME: ash — warm charcoal & slate (dark) */
-[data-theme="ash"] {
-  --bg:           #1c1c1e;
-  --surface:      #242426;
-  --surface-hi:   #2c2c30;
-  --border:       #38383c;
-  --border-dim:   #2c2c30;
-  --accent:       #9396a8;
-  --accent-hi:    #b8bccf;
-  --text:         #d4d0cc;
-  --text-dim:     #7a7870;
-  --text-faint:   #46454240;
-  --text-faint-s: #464542;
-  --clock:        #e8e4de;
-  --bg-img:       none;
-  --blur:         0px;
-}
+    --font-mono:     "Terminus", "Terminus (TTF)", "DejaVu Sans Mono", monospace;
 
-/* ▸ THEME: linen — warm cream & sand (light) */
-[data-theme="linen"] {
-  --bg:           #f4efe5;
-  --surface:      #faf7f2;
-  --surface-hi:   #eeead8;
-  --border:       #ddd6c0;
-  --border-dim:   #e6e0ce;
-  --accent:       #8a7660;
-  --accent-hi:    #5e4c38;
-  --text:         #352c20;
-  --text-dim:     #8a8070;
-  --text-faint:   #c0b8a880;
-  --text-faint-s: #c0b8a8;
-  --clock:        #1e180e;
-  --bg-img:       none;
-  --blur:         0px;
-}
+    --sz-font:       12px;
+    --sz-font-link:  13px;
+    --sz-font-label: 10px;
 
-/* ▸ THEME: bark — espresso parchment · LIGHT warm bg-image */
-[data-theme="bark"] {
-  --bg:           #ede0cc;
-  --surface:      rgba(252, 248, 240, 0.80);
-  --surface-hi:   rgba(240, 232, 216, 0.86);
-  --border:       rgba(140, 108, 68, 0.28);
-  --border-dim:   rgba(140, 108, 68, 0.14);
-  --accent:       #6e4e28;
-  --accent-hi:    #4a3018;
-  --text:         #342418;
-  --text-dim:     #9a8060;
-  --text-faint:   #c0a88080;
-  --text-faint-s: #c0a880;
-  --clock:        #281808;
-  /* Coffee morning light — Unsplash */
-  --bg-img:       url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80&fit=crop&auto=format');
-  --blur:         18px;
-}
+    --sp-xs:         4px;
+    --sp-sm:         8px;
+    --sp-md:         16px;
+    --sp-lg:         32px;
+    --sp-xl:         64px;
 
-/* ▸ THEME: moss — sage & stone · LIGHT cool bg-image */
-[data-theme="moss"] {
-  --bg:           #dce6d8;
-  --surface:      rgba(248, 252, 246, 0.80);
-  --surface-hi:   rgba(232, 244, 230, 0.86);
-  --border:       rgba(60, 100, 60, 0.22);
-  --border-dim:   rgba(60, 100, 60, 0.10);
-  --accent:       #3e6848;
-  --accent-hi:    #284e34;
-  --text:         #1a2e20;
-  --text-dim:     #5a8060;
-  --text-faint:   #90c09080;
-  --text-faint-s: #90c090;
-  --clock:        #101e14;
-  /* Misty forest — Unsplash */
-  --bg-img:       url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80&fit=crop&auto=format');
-  --blur:         20px;
-}
+    --link-min-w:    140px;
+    --link-pad-v:    var(--sp-sm);
+    --link-pad-h:    var(--sp-md);
+    --link-gap:      var(--sp-md);
 
-/*──────────────────────────────────────────────────────────────
-  RESET
-──────────────────────────────────────────────────────────────*/
-*,*::before,*::after { box-sizing: border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-html { height: 100%; }
+    --panel-w:       260px;
+    --panel-pad:     var(--sp-md);
 
-body {
-  height: 100dvh;           /* dynamic viewport — avoids mobile chrome bar overlap */
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--bg);
-  background-image: var(--bg-img);
-  background-size: cover;
-  background-position: center;
-  color: var(--text);
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 13px;
-  /* Respect notch / safe areas */
-  padding: max(env(safe-area-inset-top,0px),8px) 10px max(env(safe-area-inset-bottom,0px),8px);
-}
+    --anim-fast:     80ms;
+    --anim-mid:      160ms;
+    --anim-slow:     260ms;
 
-/* Frosted-glass layer sits under everything, above bg-image */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  backdrop-filter: blur(var(--blur));
-  -webkit-backdrop-filter: blur(var(--blur));
-  pointer-events: none;
-  z-index: 0;
-}
-body > * { position: relative; z-index: 1; }
+    /* touch target minimum — WCAG 2.5.5 */
+    --touch-min:     44px;
+  }
 
-/*──────────────────────────────────────────────────────────────
-  CARD — base panel style (oneechan: hairline border, minimal bg)
-──────────────────────────────────────────────────────────────*/
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-}
+  /* ── reset ─────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/*──────────────────────────────────────────────────────────────
-  SECTION MICRO-LABEL
-──────────────────────────────────────────────────────────────*/
-.lbl {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 8px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-faint-s);
-  padding: 0 1px;
-  margin-bottom: 5px;
-  user-select: none;
-}
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--c-bg);
+    color: var(--c-fg);
+    font-family: var(--font-mono);
+    font-size: var(--sz-font);
+    line-height: 1.4;
+    overflow: hidden;          /* desktop: no scroll */
+    -webkit-text-size-adjust: 100%; /* prevent iOS font inflation */
+  }
 
-/*──────────────────────────────────────────────────────────────
-  LAYOUT — flex column, fixed sections, flex-1 for links
-──────────────────────────────────────────────────────────────*/
-#hd             { flex-shrink: 0; margin-bottom: 7px; }
-#search-row     { flex-shrink: 0; margin-bottom: 7px; }
-#boards-sec     { flex-shrink: 0; margin-bottom: 7px; }
-#links-sec      { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  /* ── root layout ────────────────────────────────────────────────── */
+  #app {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
 
-/*──────────────────────────────────────────────────────────────
-  HEADER
-──────────────────────────────────────────────────────────────*/
-#hd {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px;
-}
+  /* ── link grid ──────────────────────────────────────────────────── */
+  #grid {
+    display: grid;
+    /* columns driven by JS via --cols custom property */
+    grid-template-columns: repeat(var(--cols, 2), auto);
+    gap: var(--link-gap);
+    /* don't overflow the viewport */
+    max-width: calc(100vw - var(--sp-lg) * 2);
+  }
 
-#clock {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 40px;
-  font-weight: 300;
-  font-style: italic;
-  color: var(--clock);
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
+  /* ── single link ────────────────────────────────────────────────── */
+  .link-item {
+    display: block;
+    min-width: var(--link-min-w);
+    padding: var(--link-pad-v) var(--link-pad-h);
+    background: transparent;
+    border: 1px solid var(--c-border);
+    color: var(--c-fg-dim);
+    font-family: var(--font-mono);
+    font-size: var(--sz-font-link);
+    text-decoration: none;
+    text-align: center;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    /* tap highlight: none on mobile */
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      color       var(--anim-fast) linear,
+      border-color var(--anim-fast) linear,
+      background  var(--anim-fast) linear;
+    /* no border-radius — sharp */
+  }
 
-#dateline {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 12.5px;
-  font-weight: 300;
-  font-style: italic;
-  color: var(--text-dim);
-  margin-top: 2px;
-  letter-spacing: 0.02em;
-}
+  /* active state covers :hover for touch (no hover on mobile) */
+  .link-item:hover,
+  .link-item:active {
+    color: var(--c-fg);
+    border-color: var(--c-teal);
+    background: var(--c-bg1);
+  }
 
-#hd-r { display: flex; align-items: center; gap: 6px; }
+  /* ── "options" trigger — bottom-left corner ─────────────────────── */
+  #options-trigger {
+    position: fixed;
+    bottom: var(--sp-lg);
+    left:   var(--sp-lg);
+    font-family: var(--font-mono);
+    font-size: var(--sz-font-label);
+    color: transparent;           /* invisible until hover */
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    /* generous touch target without visual bloat */
+    padding: var(--sp-sm);
+    margin: calc(var(--sp-sm) * -1); /* offset padding so position stays the same */
+    transition: color var(--anim-mid) linear;
+    z-index: 10;
+  }
 
-/* Engine pill — monospace, muted */
-#eng-pill {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  color: var(--accent);
-  background: var(--surface-hi);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 4px 8px;
-  cursor: pointer;
-  user-select: none;
-  transition: border-color .14s, color .14s;
-}
-#eng-pill:active { border-color: var(--accent); color: var(--accent-hi); }
+  /* show when page is hovered (desktop) */
+  #app:hover #options-trigger,
+  #options-trigger:hover {
+    color: var(--c-fg-faint);
+  }
 
-/* Settings icon button */
-#btn-cfg {
-  width: 30px; height: 30px;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--surface-hi);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  cursor: pointer;
-  color: var(--text-dim);
-  transition: color .14s, border-color .14s;
-}
-#btn-cfg:active { color: var(--accent); border-color: var(--accent); }
+  #options-trigger:hover,
+  #options-trigger:active {
+    color: var(--c-teal-text);
+  }
 
-/* All inline SVG icons */
-.ico { display:block; width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; overflow:visible; }
+  /* touch: always show dimly so it's discoverable without hover */
+  @media (hover: none) {
+    #options-trigger {
+      color: var(--c-fg-faint);
+    }
+  }
 
-/*──────────────────────────────────────────────────────────────
-  SEARCH
-──────────────────────────────────────────────────────────────*/
-#search-row { display: flex; gap: 6px; }
+  /* ── options panel ──────────────────────────────────────────────── */
+  #options-panel {
+    position: fixed;
+    bottom: calc(var(--sp-lg) + var(--sz-font-label) + var(--sp-sm));
+    left: var(--sp-lg);
+    width: var(--panel-w);
+    background: var(--c-bg1);
+    border: 1px solid var(--c-border);
+    padding: var(--panel-pad);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-md);
+    z-index: 20;
+    /* hidden by default */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(var(--sp-sm));
+    transition:
+      opacity   var(--anim-slow) linear,
+      transform var(--anim-slow) linear;
+  }
 
-#q {
-  flex: 1;
-  height: 40px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 0 12px;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: max(16px, 1em);   /* ≥16px prevents iOS auto-zoom */
-  font-weight: 300;
-  color: var(--text);
-  outline: none;
-  -webkit-appearance: none;
-  transition: border-color .14s;
-}
-#q::placeholder { color: var(--text-faint-s); font-weight: 300; }
-#q:focus { border-color: var(--accent); }
+  #options-panel.visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
 
-#btn-go {
-  width: 40px; height: 40px;
-  flex-shrink: 0;
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 5px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  color: var(--surface);
-  transition: opacity .14s;
-}
-#btn-go:active { opacity: .7; }
-#btn-go .ico { stroke: currentColor; }
+  /* section label */
+  .panel-label {
+    font-size: var(--sz-font-label);
+    color: var(--c-teal-text);
+    letter-spacing: 0.10em;
+    text-transform: lowercase;
+    border-bottom: 1px solid var(--c-border);
+    padding-bottom: var(--sp-xs);
+    margin-bottom: calc(var(--sp-xs) / 2);
+  }
 
-/*──────────────────────────────────────────────────────────────
-  BOARDS — /pol/ /g/ text only, 2-row accent border (oneechan)
-──────────────────────────────────────────────────────────────*/
-#boards-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 5px;
-}
+  /* ── column control ─────────────────────────────────────────────── */
+  #col-control {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-sm);
+  }
 
-.board {
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-top: 2px solid var(--border);  /* top accent edge */
-  border-radius: 4px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: border-top-color .13s, background .13s;
-  user-select: none;
-}
-.board:active {
-  background: var(--surface-hi);
-  border-top-color: var(--accent);
-}
+  .col-btn {
+    background: transparent;
+    border: 1px solid var(--c-border);
+    color: var(--c-fg-dim);
+    font-family: var(--font-mono);
+    font-size: var(--sz-font));
+    padding: var(--sp-xs) var(--sp-sm);
+    cursor: pointer;
+    transition:
+      color        var(--anim-fast) linear,
+      border-color var(--anim-fast) linear,
+      background   var(--anim-fast) linear;
+  }
 
-.board span {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10.5px;
-  font-weight: 400;
-  color: var(--text-dim);
-  letter-spacing: -0.03em;
-  user-select: none;
-  transition: color .13s;
-}
-.board:active span { color: var(--accent-hi); }
+  .col-btn:hover,
+  .col-btn:active {
+    color: var(--c-fg);
+    border-color: var(--c-teal);
+    background: var(--c-bg2);
+  }
 
-/*──────────────────────────────────────────────────────────────
-  QUICK LINKS — favicon + name, 2-col
-──────────────────────────────────────────────────────────────*/
-#links-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-  overflow-y: auto;
-  align-content: start;
-  flex: 1;
-  min-height: 0;
-  /* hide scrollbar — page still scrollable for many custom links */
-  scrollbar-width: none;
-}
-#links-grid::-webkit-scrollbar { display: none; }
+  #col-display {
+    flex: 1;
+    text-align: center;
+    color: var(--c-fg-dim);
+    font-size: var(--sz-font-label);
+    letter-spacing: 0.06em;
+  }
 
-.lnk {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  height: 34px;
-  padding: 0 9px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  text-decoration: none;
-  cursor: pointer;
-  overflow: hidden;
-  transition: background .13s, border-color .13s;
-}
-.lnk:active {
-  background: var(--surface-hi);
-  border-color: var(--accent);
-}
+  /* ── add link form ──────────────────────────────────────────────── */
+  #add-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xs);
+  }
 
-/* favicon */
-.lnk-ico {
-  width: 13px; height: 13px;
-  flex-shrink: 0;
-  border-radius: 2px;
-  object-fit: contain;
-  opacity: .8;
-}
+  .panel-input {
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    color: var(--c-fg);
+    font-family: var(--font-mono);
+    font-size: var(--sz-font));
+    padding: var(--sp-xs) var(--sp-sm);
+    outline: none;
+    width: 100%;
+    transition: border-color var(--anim-fast) linear;
+  }
 
-/* letter monogram fallback */
-.lnk-fb {
-  width: 13px; height: 13px;
-  flex-shrink: 0;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 8px;
-  color: var(--text-dim);
-  background: var(--surface-hi);
-  border-radius: 2px;
-  display: flex; align-items: center; justify-content: center;
-}
+  .panel-input:focus {
+    border-color: var(--c-teal-hi);
+  }
 
-.lnk-name {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 11.5px;
-  font-weight: 400;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .panel-input::placeholder {
+    color: var(--c-fg-faint);
+  }
 
-/*──────────────────────────────────────────────────────────────
-  SETTINGS SHEET — bottom modal
-──────────────────────────────────────────────────────────────*/
-#ov {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.42);
-  z-index: 50;
-  display: flex; align-items: flex-end;
-  opacity: 0; pointer-events: none;
-  transition: opacity .2s;
-}
-#ov.open { opacity: 1; pointer-events: all; }
+  .btn-add {
+    background: transparent;
+    border: 1px solid var(--c-teal);
+    color: var(--c-teal-text);
+    font-family: var(--font-mono);
+    font-size: var(--sz-font-label);
+    letter-spacing: 0.08em;
+    padding: var(--sp-xs) var(--sp-sm);
+    cursor: pointer;
+    text-align: center;
+    transition:
+      background   var(--anim-fast) linear,
+      color        var(--anim-fast) linear;
+  }
 
-#sheet {
-  width: 100%;
-  max-height: 88dvh;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-bottom: none;
-  border-radius: 10px 10px 0 0;
-  padding: 0 14px 36px;
-  overflow-y: auto;
-  transform: translateY(10px);
-  transition: transform .2s;
-}
-#ov.open #sheet { transform: translateY(0); }
+  .btn-add:hover,
+  .btn-add:active {
+    background: var(--c-teal);
+    color: var(--c-fg);
+  }
 
-/* drag pill */
-.sheet-pill {
-  display: flex; justify-content: center;
-  padding: 12px 0 10px;
-}
-.sheet-pill::before {
-  content: '';
-  width: 34px; height: 3px;
-  background: var(--border);
-  border-radius: 2px;
-}
+  /* ── link list (remove section) ─────────────────────────────────── */
+  #link-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xs);
+    max-height: 180px;
+    overflow-y: auto;
+  }
 
-.sh-head {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 22px;
-  font-weight: 300;
-  font-style: italic;
-  color: var(--text);
-  margin-bottom: 16px;
-}
+  #link-list::-webkit-scrollbar { width: 2px; }
+  #link-list::-webkit-scrollbar-track { background: transparent; }
+  #link-list::-webkit-scrollbar-thumb { background: var(--c-border-hi); }
 
-.sh-grp { margin-bottom: 14px; }
+  .link-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-xs);
+    color: var(--c-fg-dim);
+    font-size: var(--sz-font));
+  }
 
-.sh-lbl {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 8px;
-  font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: var(--text-faint-s);
-  margin-bottom: 6px;
-}
+  .link-row-label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--sz-font));
+  }
 
-/* chip row */
-.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .btn-remove {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--c-fg-faint);
+    font-family: var(--font-mono);
+    font-size: var(--sz-font-label);
+    padding: 1px var(--sp-xs);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+      color        var(--anim-fast) linear,
+      border-color var(--anim-fast) linear;
+  }
 
-.chip {
-  height: 28px;
-  padding: 0 10px;
-  background: var(--surface-hi);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: .04em;
-  color: var(--text-dim);
-  cursor: pointer;
-  user-select: none;
-  transition: border-color .13s, color .13s;
-}
-.chip.on { border-color: var(--accent); color: var(--accent-hi); }
-.chip:active { opacity: .75; }
+  .btn-remove:hover,
+  .btn-remove:active {
+    color: var(--c-danger-hi);
+    border-color: var(--c-danger);
+  }
 
-/* select */
-.sh-sel {
-  width: 100%;
-  height: 32px;
-  background: var(--surface-hi);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  padding: 0 10px;
-  outline: none;
-  -webkit-appearance: none;
-  cursor: pointer;
-}
+  /* ── close button ───────────────────────────────────────────────── */
+  #btn-close-panel {
+    background: transparent;
+    border: none;
+    color: var(--c-fg-faint);
+    font-family: var(--font-mono);
+    font-size: var(--sz-font-label);
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-align: right;
+    padding: 0;
+    align-self: flex-end;
+    transition: color var(--anim-fast) linear;
+  }
 
-.sh-hr { height: 1px; background: var(--border-dim); margin: 12px 0; }
+  #btn-close-panel:hover { color: var(--c-fg-dim); }
 
-/* input row */
-.sh-row { display: flex; gap: 5px; margin-bottom: 5px; }
+  /* ── empty state ────────────────────────────────────────────────── */
+  #empty-hint {
+    color: var(--c-fg-faint);
+    font-size: var(--sz-font-label);
+    text-align: center;
+    letter-spacing: 0.06em;
+    display: none;
+  }
 
-.sh-in {
-  flex: 1; min-width: 0;
-  height: 30px;
-  background: var(--surface-hi);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  padding: 0 8px;
-  outline: none;
-}
-.sh-in:focus { border-color: var(--accent); }
-.sh-in::placeholder { color: var(--text-faint-s); }
+  /* ── mobile breakpoint ──────────────────────────────────────────── */
+  /*
+   * On narrow viewports:
+   *  - panel goes full-width, anchored to bottom edge
+   *  - link grid switches to 1 column (user col setting still applies via --cols)
+   *  - fonts scale up slightly for finger-friendliness
+   *  - link min-width set to fill available space
+   *  - inputs/buttons get min touch target height
+   */
+  @media (max-width: 540px) {
+    :root {
+      --sz-font:       14px;
+      --sz-font-link:  14px;
+      --sz-font-label: 12px;
+      --sp-xs:         6px;
+      --sp-sm:         10px;
+      --sp-md:         18px;
+      --sp-lg:         20px;
+      --link-min-w:    0px;      /* links stretch to fill grid cell */
+      --panel-w:       100vw;    /* full width on mobile */
+      --panel-pad:     var(--sp-md);
+    }
 
-.sh-btn {
-  height: 30px;
-  padding: 0 12px;
-  background: var(--surface-hi);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text-dim);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-.sh-btn.p {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--surface);
-}
-.sh-btn:active { opacity: .75; }
+    html, body {
+      overflow: auto;            /* allow scrolling if panel is tall */
+      height: auto;
+      min-height: 100%;
+    }
 
-/* saved sites */
-#saved { display: flex; flex-direction: column; gap: 4px; }
+    #app {
+      min-height: 100svh;        /* svh = small viewport height (accounts for mobile chrome) */
+      height: auto;
+      padding: var(--sp-xl) var(--sp-lg);
+    }
 
-.sv-row {
-  display: flex; align-items: center; gap: 7px;
-  padding: 6px 8px;
-  background: var(--surface-hi);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-}
-.sv-row span {
-  flex: 1;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  color: var(--text-dim);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.sv-row button {
-  background: none; border: none;
-  color: var(--text-faint-s);
-  font-size: 15px; line-height: 1;
-  cursor: pointer; padding: 0 2px; flex-shrink: 0;
-}
-.sv-row button:active { color: #d44; }
+    #grid {
+      grid-template-columns: repeat(var(--cols, 1), 1fr);
+      width: min(100%, calc(var(--touch-min) * 5));
+      max-width: 100%;
+    }
 
-.empty {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  color: var(--text-faint-s);
-  padding: 2px 0;
-}
+    .link-item {
+      width: 100%;
+      min-height: var(--touch-min);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-/*──────────────────────────────────────────────────────────────
-  TOAST
-──────────────────────────────────────────────────────────────*/
-#toast {
-  position: fixed;
-  bottom: 22px; left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  background: var(--surface-hi);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 6px 14px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: .06em;
-  color: var(--accent);
-  opacity: 0; pointer-events: none;
-  transition: opacity .17s, transform .17s;
-  z-index: 99; white-space: nowrap;
-}
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    /* panel: full-width sheet from bottom, scrollable internally */
+    #options-panel {
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-height: 80svh;
+      overflow-y: auto;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+      border-top: 1px solid var(--c-border);
+      /* reset upward slide to downward */
+      transform: translateY(100%);
+    }
 
-/*──────────────────────────────────────────────────────────────
-  ENTRANCE — staggered fade-up
-──────────────────────────────────────────────────────────────*/
-@keyframes up {
-  from { opacity:0; transform: translateY(7px); }
-  to   { opacity:1; transform: translateY(0); }
-}
-#hd         { animation: up .22s ease both .00s; }
-#search-row { animation: up .22s ease both .05s; }
-#boards-sec { animation: up .22s ease both .09s; }
-#links-sec  { animation: up .22s ease both .13s; }
+    #options-panel.visible {
+      transform: translateY(0);
+    }
+
+    /* col buttons: taller touch targets */
+    .col-btn {
+      min-height: var(--touch-min);
+      min-width: var(--touch-min);
+    }
+
+    /* inputs: prevent iOS zoom (font-size must be >= 16px on inputs) */
+    .panel-input {
+      font-size: 16px;
+      min-height: var(--touch-min);
+    }
+
+    .btn-add {
+      min-height: var(--touch-min);
+      font-size: var(--sz-font-label);
+    }
+
+    .btn-remove {
+      min-height: calc(var(--touch-min) * 0.75);
+      min-width: calc(var(--touch-min) * 1.5);
+    }
+
+    /* trigger: bottom-left, always visible on touch */
+    #options-trigger {
+      bottom: var(--sp-md);
+      left:   var(--sp-md);
+    }
+  }
+
+  /* very small screens (320px phones) */
+  @media (max-width: 360px) {
+    :root {
+      --sp-lg: var(--sp-md);
+    }
+  }
 </style>
 </head>
 <body>
+<div id="app">
 
-<!-- ════════════════ HEADER ════════════════ -->
-<header id="hd" class="card">
-  <div>
-    <div id="clock">00:00</div>
-    <div id="dateline">—</div>
-  </div>
-  <div id="hd-r">
-    <div id="eng-pill">ddg</div>
-    <div id="btn-cfg">
-      <!-- sliders icon — pure SVG, no emoji, no external sprite -->
-      <svg class="ico" viewBox="0 0 16 16">
-        <line x1="1" y1="4"  x2="15" y2="4"/>
-        <line x1="1" y1="8"  x2="15" y2="8"/>
-        <line x1="1" y1="12" x2="15" y2="12"/>
-        <circle cx="4.5" cy="4"  r="1.5" fill="var(--surface)"/>
-        <circle cx="10"  cy="8"  r="1.5" fill="var(--surface)"/>
-        <circle cx="6.5" cy="12" r="1.5" fill="var(--surface)"/>
-      </svg>
-    </div>
-  </div>
-</header>
+  <!-- centered link grid -->
+  <div id="grid"></div>
 
-<!-- ════════════════ SEARCH ════════════════ -->
-<div id="search-row">
-  <input id="q" type="search" placeholder="search…"
-    autocomplete="off" autocorrect="off"
-    autocapitalize="off" spellcheck="false"
-    enterkeyhint="search"/>
-  <button id="btn-go">
-    <!-- arrow-right icon -->
-    <svg class="ico" viewBox="0 0 16 16">
-      <line x1="3" y1="8" x2="13" y2="8"/>
-      <polyline points="9,4 13,8 9,12"/>
-    </svg>
-  </button>
-</div>
+  <!-- empty state -->
+  <div id="empty-hint">no links. hover → options → add link.</div>
 
-<!-- ════════════════ BOARDS ════════════════ -->
-<section id="boards-sec">
-  <div class="lbl">boards</div>
-  <div id="boards-grid">
-    <a class="board" href="https://boards.4chan.org/b/"   target="_blank" rel="noopener"><span>/b/</span></a>
-    <a class="board" href="https://boards.4chan.org/pol/" target="_blank" rel="noopener"><span>/pol/</span></a>
-    <a class="board" href="https://boards.4chan.org/g/"   target="_blank" rel="noopener"><span>/g/</span></a>
-    <a class="board" href="https://boards.4chan.org/mu/"  target="_blank" rel="noopener"><span>/mu/</span></a>
-    <a class="board" href="https://boards.4chan.org/tv/"  target="_blank" rel="noopener"><span>/tv/</span></a>
-    <a class="board" href="https://boards.4chan.org/v/"   target="_blank" rel="noopener"><span>/v/</span></a>
-    <a class="board" href="https://boards.4chan.org/fit/" target="_blank" rel="noopener"><span>/fit/</span></a>
-    <a class="board" href="https://boards.4chan.org/lit/" target="_blank" rel="noopener"><span>/lit/</span></a>
-    <a class="board" href="https://boards.4chan.org/a/"   target="_blank" rel="noopener"><span>/a/</span></a>
-    <a class="board" href="https://boards.4chan.org/wg/"  target="_blank" rel="noopener"><span>/wg/</span></a>
-  </div>
-</section>
+  <!-- options trigger (bottom-left, appears on page hover) -->
+  <div id="options-trigger" role="button" tabindex="0">options</div>
 
-<!-- ════════════════ QUICK LINKS ════════════════ -->
-<section id="links-sec">
-  <div class="lbl">links</div>
-  <div id="links-grid">
-    <!-- Populated by JS — static defaults + user custom sites -->
-  </div>
-</section>
+  <!-- options panel -->
+  <div id="options-panel" role="dialog" aria-label="Options">
 
-<!-- ════════════════ SETTINGS MODAL ════════════════ -->
-<div id="ov">
-  <div id="sheet">
-    <div class="sheet-pill"></div>
-    <div class="sh-head">settings</div>
-
-    <div class="sh-grp">
-      <div class="sh-lbl">theme</div>
-      <div class="chips" id="t-chips">
-        <button class="chip" data-v="ash">ash</button>
-        <button class="chip" data-v="linen">linen</button>
-        <button class="chip" data-v="bark">bark</button>
-        <button class="chip" data-v="moss">moss</button>
-      </div>
+    <!-- columns -->
+    <div class="panel-label">columns</div>
+    <div id="col-control">
+      <button class="col-btn" id="btn-col-dec">−</button>
+      <span id="col-display">2 col</span>
+      <button class="col-btn" id="btn-col-inc">+</button>
     </div>
 
-    <div class="sh-grp">
-      <div class="sh-lbl">search engine</div>
-      <div class="chips" id="e-chips">
-        <button class="chip" data-v="ddg">duckduckgo</button>
-        <button class="chip" data-v="google">google</button>
-        <button class="chip" data-v="startpage">startpage</button>
-        <button class="chip" data-v="brave">brave</button>
-        <button class="chip" data-v="kagi">kagi</button>
-        <button class="chip" data-v="searx">searxng</button>
-      </div>
+    <!-- add link -->
+    <div class="panel-label">add link</div>
+    <div id="add-form">
+      <input class="panel-input" id="input-label" type="text" placeholder="label" autocomplete="off" spellcheck="false">
+      <input class="panel-input" id="input-url"   type="url"  placeholder="https://" autocomplete="off" spellcheck="false">
+      <button class="btn-add" id="btn-add">add</button>
     </div>
 
-    <div class="sh-grp">
-      <div class="sh-lbl">date format</div>
-      <select class="sh-sel" id="d-fmt">
-        <option value="dmy">dd / mm / yyyy</option>
-        <option value="mdy">mm / dd / yyyy</option>
-        <option value="iso">yyyy-mm-dd  (ISO)</option>
-        <option value="long">Weekday, Month Day</option>
-        <option value="unix">unix timestamp</option>
-      </select>
-    </div>
+    <!-- remove links -->
+    <div class="panel-label">links</div>
+    <div id="link-list"></div>
 
-    <div class="sh-hr"></div>
-
-    <div class="sh-grp">
-      <div class="sh-lbl">add site</div>
-      <div class="sh-row">
-        <input class="sh-in" id="in-n" placeholder="name"/>
-        <input class="sh-in" id="in-u" placeholder="url"/>
-      </div>
-      <div class="sh-row">
-        <button class="sh-btn p" id="btn-add">+ add</button>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-faint-s);align-self:center;padding-left:5px;">favicon auto-fetched</span>
-      </div>
-    </div>
-
-    <div class="sh-grp">
-      <div class="sh-lbl">saved sites</div>
-      <div id="saved"></div>
-    </div>
-
-    <div class="sh-hr"></div>
-    <div style="text-align:right;">
-      <button class="sh-btn" id="btn-rst">reset defaults</button>
-    </div>
+    <button id="btn-close-panel">close</button>
   </div>
 </div>
-
-<div id="toast"></div>
 
 <script>
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  DATA
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
+  /* ── state ─────────────────────────────────────────────────────── */
+  const STORAGE_KEY = 'startpage_v1';
 
-/* Static default quick links.
-   domain key drives the Google favicon API.  */
-const LINKS = [
-  { n:'GitHub',         u:'https://github.com',                       d:'github.com'       },
-  { n:'Hacker News',    u:'https://news.ycombinator.com',             d:'ycombinator.com'  },
-  { n:'Lobsters',       u:'https://lobste.rs',                        d:'lobste.rs'        },
-  { n:'Reddit',         u:'https://old.reddit.com',                   d:'reddit.com'       },
-  { n:'Letterboxd',     u:'https://letterboxd.com',                   d:'letterboxd.com'   },
-  { n:'Last.fm',        u:'https://www.last.fm',                      d:'last.fm'          },
-  { n:'Are.na',         u:'https://www.are.na',                       d:'are.na'           },
-  { n:'Inoreader',      u:'https://www.inoreader.com',                d:'inoreader.com'    },
-  { n:'Discogs',        u:'https://www.discogs.com',                  d:'discogs.com'      },
-  { n:'Bandcamp',       u:'https://bandcamp.com',                     d:'bandcamp.com'     },
-  { n:'Wikipedia',      u:'https://en.wikipedia.org',                 d:'wikipedia.org'    },
-  { n:'Wolfram\u03b1',  u:'https://www.wolframalpha.com',             d:'wolframalpha.com' },
-];
+  const DEFAULT_LINKS = [
+    { label: 'github',    url: 'https://github.com' },
+    { label: 'proton',    url: 'https://mail.proton.me' },
+    { label: 'lobsters',  url: 'https://lobste.rs' },
+    { label: 'archwiki',  url: 'https://wiki.archlinux.org' },
+  ];
 
-const ENGINES = {
-  ddg:       { l:'ddg',       q:'https://duckduckgo.com/?q='              },
-  google:    { l:'google',    q:'https://www.google.com/search?q='        },
-  startpage: { l:'startpage', q:'https://www.startpage.com/search?q='     },
-  brave:     { l:'brave',     q:'https://search.brave.com/search?q='      },
-  kagi:      { l:'kagi',      q:'https://kagi.com/search?q='              },
-  searx:     { l:'searxng',   q:'https://searx.be/search?q='              },
-};
+  const MIN_COLS = 1;
+  const MAX_COLS = 8;
 
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  STATE
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
-const DEF = { theme:'ash', engine:'ddg', fmt:'dmy', sites:[] };
-let S = { ...DEF };
-
-const load = () => {
-  try { const r=localStorage.getItem('sp3'); if(r) S={...DEF,...JSON.parse(r)}; }
-  catch(_) { S={...DEF}; }
-};
-const save = () => localStorage.setItem('sp3', JSON.stringify(S));
-
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  CLOCK
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
-const $c = document.getElementById('clock');
-const $d = document.getElementById('dateline');
-const p  = n => String(n).padStart(2,'0');
-const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const DA = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-function fmt(d) {
-  const [Y,M,D] = [d.getFullYear(), p(d.getMonth()+1), p(d.getDate())];
-  if (S.fmt==='dmy')  return `${D} / ${M} / ${Y}`;
-  if (S.fmt==='mdy')  return `${M} / ${D} / ${Y}`;
-  if (S.fmt==='iso')  return `${Y}-${M}-${D}`;
-  if (S.fmt==='long') return `${DA[d.getDay()]},  ${MO[d.getMonth()]} ${d.getDate()}`;
-  if (S.fmt==='unix') return `${Math.floor(d/1000)}`;
-  return `${D} / ${M} / ${Y}`;
-}
-
-function tick() {
-  const n=new Date();
-  $c.textContent = `${p(n.getHours())}:${p(n.getMinutes())}`;
-  $d.textContent = fmt(n);
-}
-
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  THEME
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
-const applyTheme = () =>
-  document.documentElement.setAttribute('data-theme', S.theme);
-
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  LINKS — build DOM + favicon
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
-function favi(domain) {
-  return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
-}
-
-/* Extract hostname from an arbitrary url string */
-function host(url) {
-  try { return new URL(url.startsWith('http') ? url : 'https://'+url).hostname.replace(/^www\./,''); }
-  catch(_) { return url; }
-}
-
-function mkLink({ n, u, d }) {
-  const href   = u.startsWith('http') ? u : 'https://'+u;
-  const domain = d || host(href);
-  const a      = document.createElement('a');
-  a.className  = 'lnk';
-  a.href       = href;
-  a.target     = '_blank';
-  a.rel        = 'noopener';
-
-  const img    = document.createElement('img');
-  img.className= 'lnk-ico';
-  img.src      = favi(domain);
-  img.alt      = '';
-  img.loading  = 'lazy';
-  img.onerror  = function() {
-    const fb       = document.createElement('span');
-    fb.className   = 'lnk-fb';
-    fb.textContent = n.charAt(0).toUpperCase();
-    img.replaceWith(fb);
-  };
-
-  const nm     = document.createElement('span');
-  nm.className = 'lnk-name';
-  nm.textContent = n;
-
-  a.append(img, nm);
-  return a;
-}
-
-function renderLinks() {
-  const g = document.getElementById('links-grid');
-  g.innerHTML = '';
-  LINKS.forEach(l => g.appendChild(mkLink(l)));
-  (S.sites||[]).forEach(l => g.appendChild(mkLink({ n:l.n, u:l.u })));
-}
-
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  ENGINE BADGE
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
-const applyEng = () =>
-  document.getElementById('eng-pill').textContent = ENGINES[S.engine]?.l ?? 'ddg';
-
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  SEARCH
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
-function search() {
-  const v = document.getElementById('q').value.trim();
-  if(!v) return;
-  window.open((ENGINES[S.engine]?.q ?? ENGINES.ddg.q)+encodeURIComponent(v), '_blank');
-  document.getElementById('q').value='';
-}
-
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  MODAL
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
-const ov = document.getElementById('ov');
-const openModal  = () => { syncUI(); ov.classList.add('open'); };
-const closeModal = () => ov.classList.remove('open');
-
-function syncUI() {
-  document.querySelectorAll('#t-chips .chip').forEach(c =>
-    c.classList.toggle('on', c.dataset.v===S.theme));
-  document.querySelectorAll('#e-chips .chip').forEach(c =>
-    c.classList.toggle('on', c.dataset.v===S.engine));
-  document.getElementById('d-fmt').value = S.fmt;
-  renderSaved();
-}
-
-function renderSaved() {
-  const el = document.getElementById('saved');
-  el.innerHTML='';
-  if(!(S.sites||[]).length) {
-    const d=document.createElement('div');
-    d.className='empty'; d.textContent='no custom sites yet'; el.appendChild(d); return;
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (_) {}
+    return { links: DEFAULT_LINKS, cols: 2 };
   }
-  S.sites.forEach((s,i) => {
-    const r   = document.createElement('div'); r.className='sv-row';
-    const sp  = document.createElement('span'); sp.textContent=`${s.n}  —  ${s.u}`;
-    const btn = document.createElement('button'); btn.textContent='×';
-    btn.addEventListener('click', () => {
-      S.sites.splice(i,1); save(); renderLinks(); renderSaved(); toast('removed');
+
+  function saveState(state) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+  }
+
+  let state = loadState();
+
+  /* ── dom refs ───────────────────────────────────────────────────── */
+  const grid         = document.getElementById('grid');
+  const emptyHint    = document.getElementById('empty-hint');
+  const trigger      = document.getElementById('options-trigger');
+  const panel        = document.getElementById('options-panel');
+  const colDisplay   = document.getElementById('col-display');
+  const btnColDec    = document.getElementById('btn-col-dec');
+  const btnColInc    = document.getElementById('btn-col-inc');
+  const inputLabel   = document.getElementById('input-label');
+  const inputUrl     = document.getElementById('input-url');
+  const btnAdd       = document.getElementById('btn-add');
+  const linkList     = document.getElementById('link-list');
+  const btnClose     = document.getElementById('btn-close-panel');
+
+  /* ── render ─────────────────────────────────────────────────────── */
+  function render() {
+    /* apply column count via CSS custom property — no magic numbers */
+    grid.style.setProperty('--cols', state.cols);
+    colDisplay.textContent = `${state.cols} col`;
+
+    /* grid links */
+    grid.innerHTML = '';
+    state.links.forEach((link, i) => {
+      const a = document.createElement('a');
+      a.className = 'link-item';
+      a.href = link.url;
+      a.textContent = link.label;
+      a.dataset.index = i;
+      grid.appendChild(a);
     });
-    r.append(sp,btn); el.appendChild(r);
+
+    /* empty hint */
+    emptyHint.classList.toggle('visible', state.links.length === 0);
+    grid.style.display = state.links.length === 0 ? 'none' : 'grid';
+
+    /* link list in panel */
+    linkList.innerHTML = '';
+    if (state.links.length === 0) {
+      const empty = document.createElement('div');
+      empty.style.color = 'var(--c-fg-faint)';
+      empty.style.fontSize = 'var(--sz-font-label)';
+      empty.textContent = 'no links';
+      linkList.appendChild(empty);
+    } else {
+      state.links.forEach((link, i) => {
+        const row = document.createElement('div');
+        row.className = 'link-row';
+
+        const label = document.createElement('span');
+        label.className = 'link-row-label';
+        label.textContent = link.label;
+        label.title = link.url;
+
+        const btn = document.createElement('button');
+        btn.className = 'btn-remove';
+        btn.textContent = 'remove';
+        btn.dataset.index = i;
+        btn.addEventListener('click', () => removeLink(i));
+
+        row.appendChild(label);
+        row.appendChild(btn);
+        linkList.appendChild(row);
+      });
+    }
+
+    /* col buttons enabled state */
+    btnColDec.disabled = state.cols <= MIN_COLS;
+    btnColInc.disabled = state.cols >= MAX_COLS;
+    btnColDec.style.opacity = state.cols <= MIN_COLS ? '0.3' : '1';
+    btnColInc.style.opacity = state.cols >= MAX_COLS ? '0.3' : '1';
+
+    saveState(state);
+    // re-apply responsive column cap after any state change
+    if (typeof applyResponsiveCols === 'function') applyResponsiveCols();
+  }
+
+  /* ── mutations ──────────────────────────────────────────────────── */
+  function addLink() {
+    const label = inputLabel.value.trim();
+    let   url   = inputUrl.value.trim();
+    if (!label || !url) return;
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+    state.links.push({ label, url });
+    inputLabel.value = '';
+    inputUrl.value   = '';
+    render();
+  }
+
+  function removeLink(index) {
+    state.links.splice(index, 1);
+    render();
+  }
+
+  function changeCol(delta) {
+    const next = state.cols + delta;
+    if (next < MIN_COLS || next > MAX_COLS) return;
+    state.cols = next;
+    render();
+  }
+
+  /* ── panel toggle ───────────────────────────────────────────────── */
+  let panelOpen = false;
+
+  function openPanel() {
+    panelOpen = true;
+    panel.classList.add('visible');
+    inputLabel.focus();
+  }
+
+  function closePanel() {
+    panelOpen = false;
+    panel.classList.remove('visible');
+  }
+
+  /* ── event wiring ───────────────────────────────────────────────── */
+  trigger.addEventListener('click', () => panelOpen ? closePanel() : openPanel());
+  trigger.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); panelOpen ? closePanel() : openPanel(); } });
+
+  btnClose.addEventListener('click', closePanel);
+
+  btnColDec.addEventListener('click', () => changeCol(-1));
+  btnColInc.addEventListener('click', () => changeCol(+1));
+
+  btnAdd.addEventListener('click', addLink);
+
+  inputUrl.addEventListener('keydown', e => { if (e.key === 'Enter') addLink(); });
+  inputLabel.addEventListener('keydown', e => { if (e.key === 'Enter') inputUrl.focus(); });
+
+  /* close panel on outside click */
+  document.addEventListener('click', e => {
+    if (panelOpen && !panel.contains(e.target) && e.target !== trigger) closePanel();
   });
-}
 
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  TOAST
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
-function toast(msg) {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  clearTimeout(toast._t);
-  toast._t=setTimeout(()=>t.classList.remove('show'),1500);
-}
+  /* close on Escape */
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && panelOpen) closePanel(); });
 
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  EVENTS
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
-document.getElementById('btn-go').onclick = search;
-document.getElementById('q').onkeydown = e => { if(e.key==='Enter') search(); };
+  /* ── init ───────────────────────────────────────────────────────── */
+  render();
 
-// cycle engine on badge tap
-document.getElementById('eng-pill').onclick = () => {
-  const k=Object.keys(ENGINES), i=k.indexOf(S.engine);
-  S.engine=k[(i+1)%k.length]; applyEng(); save(); toast(ENGINES[S.engine].l);
-};
+  /* On mobile, clamp --cols to a sensible max based on viewport width
+     so the grid never overflows when the user set many columns on desktop.
+     We don't mutate state.cols — just override the CSS property at render time. */
+  function applyResponsiveCols() {
+    const vw = window.innerWidth;
+    // rough px per column: link-min-w token is 140px on desktop, 0 on mobile
+    // use a simple viewport-fraction heuristic instead of reading computed styles
+    const maxFit = vw < 541 ? Math.max(1, Math.floor(vw / 120)) : MAX_COLS;
+    const effective = Math.min(state.cols, maxFit);
+    grid.style.setProperty('--cols', effective);
+  }
 
-document.getElementById('btn-cfg').onclick = openModal;
-ov.onclick = e => { if(e.target===ov) closeModal(); };
-
-// theme chips
-document.getElementById('t-chips').onclick = e => {
-  const c=e.target.closest('.chip'); if(!c) return;
-  S.theme=c.dataset.v; applyTheme(); save(); syncUI(); toast('theme → '+S.theme);
-};
-
-// engine chips
-document.getElementById('e-chips').onclick = e => {
-  const c=e.target.closest('.chip'); if(!c) return;
-  S.engine=c.dataset.v; applyEng(); save(); syncUI(); toast(ENGINES[S.engine].l);
-};
-
-// date format
-document.getElementById('d-fmt').onchange = e => {
-  S.fmt=e.target.value; save(); tick();
-};
-
-// add site
-document.getElementById('btn-add').onclick = () => {
-  const n=document.getElementById('in-n').value.trim();
-  const u=document.getElementById('in-u').value.trim();
-  if(!n||!u){ toast('name + url required'); return; }
-  S.sites=S.sites||[];
-  S.sites.push({n,u});
-  save();
-  document.getElementById('in-n').value='';
-  document.getElementById('in-u').value='';
-  renderLinks(); renderSaved(); toast('+ '+n);
-};
-
-// reset
-document.getElementById('btn-rst').onclick = () => {
-  if(!confirm('Reset all settings?')) return;
-  localStorage.removeItem('sp3');
-  S={...DEF}; applyTheme(); applyEng(); renderLinks(); syncUI(); toast('reset');
-};
-
-/*
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  INIT
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- */
-(function(){
-  load();
-  applyTheme();
-  applyEng();
-  renderLinks();
-  tick();
-  setInterval(tick, 1000);
-})();
+  applyResponsiveCols();
+  window.addEventListener('resize', applyResponsiveCols, { passive: true });
 </script>
 </body>
 </html>
